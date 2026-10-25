@@ -1,0 +1,15 @@
+# Operating System Files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Node / Editor
+node_modules/
+.vscode/
+.idea/
