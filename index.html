@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SOUL NETRA | Solution Platform & Regulatory Workflow Engine (SIH26262)</title>
+  <title>SOUL NETRA | Multi-Tier Regulatory Orchestration & Compliance Platform (SIH26262)</title>
   <meta name="description" content="SOUL NETRA: System for Oversight, Unified Lifecycle — Network for Evaluation, Tracking, Reporting & Accountability. An Explainable, Rule-Version-Aware Regulatory Workflow Engine for AICTE Approval Processes.">
   <link rel="icon" href="logo.png" type="image/png">
   <link rel="stylesheet" href="styles.css">
@@ -25,466 +25,1087 @@
   <!-- Mobile Nav Overlay -->
   <div class="mobile-nav-overlay" id="mobile-nav-overlay"></div>
 
-  <!-- Navigation Bar -->
+  <!-- Liquid Glass Navigation Bar -->
   <nav class="navbar" id="navbar">
-    <a href="#" class="nav-brand">
-      <img src="logo.png" alt="Soul Netra Logo" class="brand-logo">
-      <div class="brand-titles">
-        <div class="brand-title">
-          SOUL NETRA
-          <span class="sih-badge">SIH26262</span>
-        </div>
-        <div class="brand-sub">System for Oversight, Unified Lifecycle &mdash; Regulatory Governance Engine</div>
-      </div>
+    <a href="#/" class="nav-brand">
+      <img src="logo.png" alt="Soul Netra" class="brand-logo">
+      <span class="sih-badge">SIH26262</span>
     </a>
 
+    <!-- Distinct Endpoints Navigation -->
     <ul class="nav-links" id="nav-links">
-      <li><a href="#simulator" class="nav-link">Workflow Simulator</a></li>
-      <li><a href="#split-clock" class="nav-link">Split-Clock SLA</a></li>
-      <li><a href="#ledger" class="nav-link">Cryptographic Ledger</a></li>
-      <li><a href="#costing" class="nav-link">Cloud Costing</a></li>
-      <li><a href="#code-assets" class="nav-link">Source Code</a></li>
-      <li><a href="#dossier" class="nav-link">Copyright Report</a></li>
+      <li><a href="#/" class="nav-link active" data-route="/">Overview</a></li>
+      <li><a href="#/institution" class="nav-link" data-route="/institution">Institution Portal</a></li>
+      <li><a href="#/scrutiny" class="nav-link" data-route="/scrutiny">Scrutiny Desk</a></li>
+      <li><a href="#/audit-ledger" class="nav-link" data-route="/audit-ledger">Audit Ledger</a></li>
+      <li><a href="#/sla-analytics" class="nav-link" data-route="/sla-analytics">SLA Analytics</a></li>
+      <li><a href="#/public-verify" class="nav-link" data-route="/public-verify">Public Verify</a></li>
     </ul>
 
     <div class="nav-actions">
+      <!-- Theme Switcher -->
       <button class="theme-toggle" id="theme-toggle" title="Toggle Dark/Light Mode" aria-label="Toggle Theme">
         <span id="theme-icon"></span>
       </button>
-      <button class="btn btn-primary btn-glow" id="btn-open-report-nav">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-        <span>View Report</span>
+
+      <!-- View Official Copyright Dossier -->
+      <button class="btn btn-outline btn-sm" id="btn-open-report-nav" title="View Protected Copyright Dossier">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        <span class="nav-btn-text">Dossier</span>
       </button>
+
+      <!-- User Session & Authentication Widget -->
+      <div class="user-session-widget" id="user-session-widget">
+        <!-- Rendered dynamically by AuthManager in app.js -->
+        <button class="btn btn-primary btn-glow btn-sm" id="btn-open-login">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <span>Sign In / Role</span>
+        </button>
+      </div>
+
+      <!-- Hamburger (Mobile) -->
       <button class="hamburger" id="hamburger" aria-label="Menu">
         <span></span><span></span><span></span>
       </button>
     </div>
   </nav>
 
-  <!-- Hero Showcase Section -->
-  <header class="hero reveal-section">
-    <div class="hero-glow-orb hero-orb-1"></div>
-    <div class="hero-glow-orb hero-orb-2"></div>
+  <!-- =========================================================================
+       PAGE ROUTER WRAPPER: DISTINCT ENDPOINTS
+       ========================================================================= -->
+  <main id="app-router-view">
 
-    <div class="hero-pill reveal-item">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 14 14"/></svg>
-      Smart India Hackathon 2026 &bull; Problem Statement SIH26262 &bull; Ministry of Education / AICTE
-    </div>
+    <!-- =======================================================================
+         ENDPOINT 1: OVERVIEW & SYSTEM ARCHITECTURE (#/)
+         ======================================================================= -->
+    <div class="page-view active" id="view-home">
+      <!-- Hero Section -->
+      <header class="hero reveal-section">
+        <div class="hero-glow-orb hero-orb-1"></div>
+        <div class="hero-glow-orb hero-orb-2"></div>
 
-    <div class="hero-logo-showcase reveal-item">
-      <img src="logo.png" alt="Soul Netra" class="hero-logo-img">
-    </div>
-
-    <h1 class="hero-title reveal-item">
-      <span class="gradient-text">SOUL NETRA</span><br>
-      Regulatory Workflow Orchestration & Continuing Compliance Engine
-    </h1>
-
-    <p class="hero-sub reveal-item">
-      An explainable, rule-version-aware GovTech platform engineered to operate above transactional portals. Eliminates bureaucratic finger-pointing via <strong>Split-Clock Delay Attribution</strong>, prevents post-approval amnesia through a <strong>Continuing Obligations Register</strong>, and ensures mathematical non-repudiation with an append-only <strong>SHA-256 rolling audit ledger</strong>.
-    </p>
-
-    <div class="hero-ctas reveal-item">
-      <a href="#simulator" class="btn btn-primary btn-glow btn-lg">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-        <span>Launch Interactive Simulator</span>
-      </a>
-      <a href="#split-clock" class="btn btn-outline btn-lg">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        <span>Test Split-Clock SLA</span>
-      </a>
-      <a href="#ledger" class="btn btn-outline btn-lg">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-        <span>Test Cryptographic Ledger</span>
-      </a>
-    </div>
-
-    <div class="hero-stats">
-      <div class="stat-card reveal-item">
-        <div class="stat-val counter" data-target="10500">0</div>
-        <div class="stat-lbl">Institutions Governed</div>
-      </div>
-      <div class="stat-card reveal-item">
-        <div class="stat-val counter" data-target="18000">0</div>
-        <div class="stat-lbl">Annual Regulatory Filings</div>
-      </div>
-      <div class="stat-card reveal-item">
-        <div class="stat-val">4 Routes</div>
-        <div class="stat-lbl">Polymorphic Topologies</div>
-      </div>
-      <div class="stat-card reveal-item">
-        <div class="stat-val">0 ms</div>
-        <div class="stat-lbl">Unattributed Review Latency</div>
-      </div>
-      <div class="stat-card reveal-item">
-        <div class="stat-val">O(N)</div>
-        <div class="stat-lbl">Linear Tamper Detection</div>
-      </div>
-    </div>
-  </header>
-
-  <!-- Module 1: Live Interactive Workflow & Route Simulator -->
-  <section class="section reveal-section" id="simulator">
-    <div class="section-header">
-      <span class="section-tag reveal-item">Interactive Module 01</span>
-      <h2 class="section-title reveal-item">Polymorphic Route State Machine Simulator</h2>
-      <p class="section-desc reveal-item">
-        AICTE regulatory applications traverse 4 distinct statutory routes depending on institution category. Select a route topology below and test state transitions or trigger adversarial illegal bypass attempts.
-      </p>
-    </div>
-
-    <div class="card reveal-item">
-      <div class="card-header">
-        <div class="card-title">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-          Active Declarative Route Topology
+        <div class="hero-pill reveal-item">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 14 14"/></svg>
+          Smart India Hackathon 2026 &bull; Problem Statement SIH26262 &bull; Ministry of Education / AICTE
         </div>
-        <span class="sih-badge">Rule Engine: APH 2024–27</span>
-      </div>
 
-      <!-- Route Selector Tabs -->
-      <div class="route-selector-tabs" id="route-tabs"></div>
+        <div class="hero-logo-showcase reveal-item">
+          <img src="logo.png" alt="Soul Netra" class="hero-logo-img">
+        </div>
 
-      <!-- Visual Stage Pipeline -->
-      <div class="stage-pipeline" id="stage-pipeline"></div>
+        <h1 class="hero-title reveal-item">
+          <span class="gradient-text">SOUL NETRA</span><br>
+          Regulatory Workflow Orchestration & Continuing Compliance Engine
+        </h1>
 
-      <!-- Simulation Action Controls -->
-      <div class="pipeline-actions">
-        <button class="btn btn-primary btn-glow" id="btn-stage-advance">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-          <span>Advance to Next Permitted Stage</span>
-        </button>
-        <button class="btn btn-outline" id="btn-stage-deficiency">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-          <span>Simulate Deficiency Notice</span>
-        </button>
-        <button class="btn btn-outline btn-danger" id="btn-stage-bypass">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
-          <span>Attempt Illegal Bypass (Adversarial Test)</span>
-        </button>
-      </div>
-    </div>
-  </section>
+        <p class="hero-sub reveal-item">
+          An explainable, rule-version-aware GovTech platform engineered to operate above transactional portals. Eliminates bureaucratic finger-pointing via <strong>Split-Clock Delay Attribution</strong>, prevents post-approval amnesia through a <strong>Continuing Obligations Register</strong>, and ensures mathematical non-repudiation with an append-only <strong>SHA-256 rolling audit ledger</strong>.
+        </p>
 
-  <!-- Module 2: Live Dual-Accumulator Split-Clock SLA Meter -->
-  <section class="section reveal-section" id="split-clock">
-    <div class="section-header">
-      <span class="section-tag reveal-item">Interactive Module 02</span>
-      <h2 class="section-title reveal-item">Split-Clock Delay Attribution Engine</h2>
-      <p class="section-desc reveal-item">
-        Unlike standard monolithic issue trackers that use a single clock, SOUL NETRA partitions elapsed duration into three mutually exclusive accumulators: T<sub>inst</sub>, T<sub>admin</sub>, and T<sub>paused</sub>.
-      </p>
-    </div>
+        <div class="hero-ctas reveal-item">
+          <a href="#/institution" class="btn btn-primary btn-glow btn-lg">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+            <span>Launch Institution Portal</span>
+          </a>
+          <a href="#/scrutiny" class="btn btn-outline btn-lg">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="11" y2="17"/></svg>
+            <span>Open Scrutiny Desk</span>
+          </a>
+          <a href="#/audit-ledger" class="btn btn-outline btn-lg">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <span>Cryptographic Ledger</span>
+          </a>
+        </div>
 
-    <div class="split-clock-dashboard reveal-item">
-      <div class="clock-meters">
-        <!-- Institution Clock -->
-        <div class="meter-box" id="box-inst">
-          <div class="meter-header">
-            <span class="meter-owner" style="color: #f59e0b;">Institution Clock (T<sub>inst</sub>)</span>
-            <div class="pulse-dot"></div>
+        <div class="hero-stats">
+          <div class="stat-card reveal-item">
+            <div class="stat-val counter" data-target="10500">0</div>
+            <div class="stat-lbl">Institutions Governed</div>
           </div>
-          <div class="meter-time" id="meter-inst-val">0h 00m 00.0s</div>
-          <div class="meter-percentage">Attributed Delinquency: <strong id="pct-inst">0%</strong></div>
-        </div>
-
-        <!-- Administrative Review Clock -->
-        <div class="meter-box active-owner" id="box-admin">
-          <div class="meter-header">
-            <span class="meter-owner" style="color: #38bdf8;">Council Review Clock (T<sub>admin</sub>)</span>
-            <div class="pulse-dot"></div>
+          <div class="stat-card reveal-item">
+            <div class="stat-val counter" data-target="4">0</div>
+            <div class="stat-lbl">Statutory Routes</div>
           </div>
-          <div class="meter-time" id="meter-admin-val">0h 00m 00.0s</div>
-          <div class="meter-percentage">Administrative Review: <strong id="pct-admin">0%</strong></div>
-        </div>
-
-        <!-- Judicial Stay Clock -->
-        <div class="meter-box" id="box-paused">
-          <div class="meter-header">
-            <span class="meter-owner" style="color: #a855f7;">Statutory Pause Clock (T<sub>paused</sub>)</span>
-            <div class="pulse-dot"></div>
+          <div class="stat-card reveal-item">
+            <div class="stat-val counter" data-target="100">0</div>
+            <div class="stat-lbl">Attribution Accuracy (%)</div>
           </div>
-          <div class="meter-time" id="meter-paused-val">0h 00m 00.0s</div>
-          <div class="meter-percentage">Judicial / Force Majeure Hold</div>
+          <div class="stat-card reveal-item">
+            <div class="stat-val counter" data-target="256">0</div>
+            <div class="stat-lbl">SHA Bit Security</div>
+          </div>
         </div>
-      </div>
+      </header>
 
-      <!-- Real-Time Delay Attribution Bar -->
-      <div class="attribution-bar-wrap">
-        <div class="attribution-bar">
-          <div class="bar-inst" id="bar-inst" style="width: 50%;"></div>
-          <div class="bar-admin" id="bar-admin" style="width: 50%;"></div>
+      <!-- Portals Quick Gateway Cards -->
+      <section class="section reveal-section">
+        <div class="section-header">
+          <span class="section-tag reveal-item">Integrated Portals</span>
+          <h2 class="section-title reveal-item">Role-Separated Functional Endpoints</h2>
+          <p class="section-desc reveal-item">
+            Explore dedicated, fully operational portals configured for institutional applicants, scrutiny officers, vigilance auditors, and the public.
+          </p>
         </div>
-        <div class="bar-labels">
-          <span style="color: #f59e0b;">Institution Share: <span id="bar-lbl-inst">50%</span></span>
-          <span style="color: #38bdf8;">Administrative Share: <span id="bar-lbl-admin">50%</span></span>
-        </div>
-      </div>
 
-      <!-- Live Clock Controls -->
-      <div class="sim-controls">
-        <button class="btn btn-outline" id="btn-custody-inst">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-          <span>Shift Custody to Institution</span>
-        </button>
-        <button class="btn btn-outline" id="btn-custody-admin">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-          <span>Shift Custody to Council Officer</span>
-        </button>
-        <button class="btn btn-outline" id="btn-custody-pause">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="2"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
-          <span>Inject Court Stay Order (Pause Clock)</span>
-        </button>
-        <button class="btn btn-outline" id="btn-custody-reset">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2.5 2v6h6M21.5 22v-6h-6"/><path d="M22 11.5A10 10 0 0 0 3.2 7.2M2 12.5a10 10 0 0 0 18.8 4.2"/></svg>
-          <span>Reset Clock Ticker</span>
-        </button>
-      </div>
+        <div class="grid-3">
+          <!-- Gateway Card 1 -->
+          <div class="card portal-card reveal-item">
+            <div class="portal-badge badge-inst">Applicant Portal</div>
+            <div class="card-icon">🎓</div>
+            <h3 class="card-title">Technical Institution Portal</h3>
+            <p class="card-desc">
+              Track approval dockets, upload statutory documents, view AI pre-check flags, and resolve deficiency notices under strict statutory countdown timers.
+            </p>
+            <div class="portal-features">
+              <span>&bull; Real-time Clock Attribution</span>
+              <span>&bull; 2-Phase Document Vault</span>
+              <span>&bull; Continuing Obligations Calendar</span>
+            </div>
+            <a href="#/institution" class="btn btn-outline btn-full">Access Institution Desk &rarr;</a>
+          </div>
+
+          <!-- Gateway Card 2 -->
+          <div class="card portal-card reveal-item">
+            <div class="portal-badge badge-council">Council Desk</div>
+            <div class="card-icon">🏛️</div>
+            <h3 class="card-title">Scrutiny & Regional Office Desk</h3>
+            <p class="card-desc">
+              AICTE Regional Officers workbench. Review dossiers, issue legally cited deficiency notices, schedule EVC inspections, and issue digital EOA certificates.
+            </p>
+            <div class="portal-features">
+              <span>&bull; Queue SLA Criticality Badges</span>
+              <span>&bull; APH 2024-27 Rule Citations</span>
+              <span>&bull; Automatic Clock Transfer Trigger</span>
+            </div>
+            <a href="#/scrutiny" class="btn btn-outline btn-full">Open Scrutiny Desk &rarr;</a>
+          </div>
+
+          <!-- Gateway Card 3 -->
+          <div class="card portal-card reveal-item">
+            <div class="portal-badge badge-audit">Vigilance & Audit</div>
+            <div class="card-icon">🛡️</div>
+            <h3 class="card-title">Cryptographic Audit Ledger</h3>
+            <p class="card-desc">
+              CAG and CVC compliance module. Verify immutable SHA-256 rolling hash chains, run live linear tamper checks, and test malicious mutation resistance.
+            </p>
+            <div class="portal-features">
+              <span>&bull; Non-repudiation Guarantees</span>
+              <span>&bull; Live SHA-256 Hash Explorer</span>
+              <span>&bull; Interactive Tamper Attack Demo</span>
+            </div>
+            <a href="#/audit-ledger" class="btn btn-outline btn-full">Inspect Audit Ledger &rarr;</a>
+          </div>
+        </div>
+
+        <div class="grid-2" style="margin-top: 1.5rem;">
+          <!-- Gateway Card 4 -->
+          <div class="card portal-card reveal-item">
+            <div class="portal-badge badge-sla">Analytics</div>
+            <div class="card-icon">⏱️</div>
+            <h3 class="card-title">Split-Clock SLA & Turnaround Analytics</h3>
+            <p class="card-desc">
+              Dual-accumulator SLA tracking. Separates institutional compliance latency from administrative review time to prevent court blame under Supreme Court precedents.
+            </p>
+            <a href="#/sla-analytics" class="btn btn-outline btn-full">View SLA Analytics &rarr;</a>
+          </div>
+
+          <!-- Gateway Card 5 -->
+          <div class="card portal-card reveal-item">
+            <div class="portal-badge badge-public">Public Transparency</div>
+            <div class="card-icon">🔍</div>
+            <h3 class="card-title">Public Verification & Transparency Desk</h3>
+            <p class="card-desc">
+              Citizen, student, and parent portal. Instant verification of genuine AICTE approval letters, approved intake capacity, and accreditation without exposing system source code.
+            </p>
+            <a href="#/public-verify" class="btn btn-outline btn-full">Open Public Verification &rarr;</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Cloud Infrastructure Costing Section -->
+      <section class="section reveal-section">
+        <div class="section-header">
+          <span class="section-tag reveal-item">Cloud Economics</span>
+          <h2 class="section-title reveal-item">MeghRaj / GeM Infrastructure Sizing</h2>
+          <p class="section-desc reveal-item">
+            Verified financial projection across 3 deployment tiers based on standard Government e-Marketplace (GeM) cloud catalog pricing (October 2026).
+          </p>
+        </div>
+
+        <div class="grid-3">
+          <div class="card cost-card reveal-item">
+            <div class="cost-tier">Tier 1: Prototype / Sandbox</div>
+            <div class="cost-price">&#8377;0 &ndash; 1,500 <span class="cost-unit">/ month</span></div>
+            <p class="card-desc">Local Docker &amp; Cloud Sandbox environment for hackathon validation.</p>
+            <ul class="cost-list">
+              <li>Local PostgreSQL 16 DB</li>
+              <li>Local Redis Event Queue</li>
+              <li>Single Node Test Runner</li>
+              <li>Mock Terminal Alerts</li>
+            </ul>
+          </div>
+
+          <div class="card cost-card featured reveal-item">
+            <div class="cost-badge">Recommended Pilot</div>
+            <div class="cost-tier">Tier 2: Regional Pilot</div>
+            <div class="cost-price">&#8377;28,500 <span class="cost-unit">/ month</span></div>
+            <p class="card-desc">50 Technical Colleges across a single AICTE Regional Office (e.g. WRO Mumbai).</p>
+            <ul class="cost-list">
+              <li>2x Kubernetes API Pods</li>
+              <li>Managed PostgreSQL (16 GB RAM)</li>
+              <li>250 GB Encrypted S3 Store</li>
+              <li>~10,000 Gov SMS Alerts</li>
+            </ul>
+          </div>
+
+          <div class="card cost-card reveal-item">
+            <div class="cost-tier">Tier 3: Multi-Regional Scale</div>
+            <div class="cost-price">&#8377;83,000 <span class="cost-unit">/ month</span></div>
+            <p class="card-desc">2,500 Technical Colleges across Western &amp; Northern Regional Offices.</p>
+            <ul class="cost-list">
+              <li>Multi-AZ HA Primary + Replica</li>
+              <li>3-Node Redis Cluster</li>
+              <li>5 TB NVMe Encrypted Storage</li>
+              <li>~250,000 SMS / WhatsApp Alerts</li>
+            </ul>
+          </div>
+        </div>
+      </section>
     </div>
-  </section>
 
-  <!-- Module 3: Working-Day Statutory Deadline & Holiday Inspector -->
-  <section class="section reveal-section" id="deadline">
-    <div class="section-header">
-      <span class="section-tag reveal-item">Interactive Module 03</span>
-      <h2 class="section-title reveal-item">Working-Day Statutory Deadline Calculator</h2>
-      <p class="section-desc reveal-item">
-        Under statutory administrative law, deadlines cannot include non-working Sundays or state-specific gazetted public holidays. Enter prescribed SLA working days to inspect derivation trails.
-      </p>
-    </div>
-
-    <div class="grid-2">
-      <div class="card reveal-item">
-        <div class="card-header">
-          <div class="card-title">Deadline Calculation Parameters</div>
+    <!-- =======================================================================
+         ENDPOINT 2: INSTITUTION PORTAL (#/institution)
+         ======================================================================= -->
+    <div class="page-view" id="view-institution">
+      <div class="endpoint-header">
+        <div class="endpoint-meta">
+          <span class="badge badge-inst">Technical Institution Portal</span>
+          <span class="institution-name-display" id="inst-header-college">COEP Technological University, Pune</span>
+          <span class="pid-tag">AICTE PID: 1-10928371 &bull; Region: WRO Mumbai</span>
         </div>
-        <div class="form-group">
-          <div class="input-group">
-            <label class="input-label">Prescribed Statutory Working Days:</label>
-            <input type="number" id="calc-days" value="15" min="1" max="90" class="input-field">
-          </div>
-          <div class="input-group">
-            <label class="input-label">State Jurisdiction (Gazetted Calendar):</label>
-            <select id="calc-jurisdiction" class="input-field">
-              <option value="MH">Maharashtra (Western Regional Office - WRO)</option>
-              <option value="DL">Delhi (Headquarters & Northern Regional Bureau)</option>
-              <option value="TN">Tamil Nadu (Southern Regional Office - SRO)</option>
-              <option value="KA">Karnataka (South Western Regional Office - SWRO)</option>
-            </select>
-          </div>
-          <button class="btn btn-primary btn-glow" id="btn-calc-deadline" style="margin-top: 0.5rem;">
-            <span>Compute Statutory Due Date</span>
+        <div class="endpoint-actions">
+          <button class="btn btn-outline btn-sm" id="btn-inst-refresh">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+            Refresh Docket
+          </button>
+          <button class="btn btn-primary btn-sm" id="btn-inst-upload-doc">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            Upload Statutory Document
           </button>
         </div>
       </div>
 
-      <div class="card reveal-item">
-        <div class="card-header">
-          <div class="card-title">Derivation & Audit Provenance</div>
+      <!-- Live Split-Clock Status Banner for Institution -->
+      <div class="inst-clock-banner" id="inst-clock-banner">
+        <div class="banner-pulse"></div>
+        <div class="banner-content">
+          <div class="banner-title" id="inst-banner-title">
+            Institutional Response Clock: ACTIVE &bull; 8 Working Days Remaining
+          </div>
+          <div class="banner-sub" id="inst-banner-sub">
+            AICTE Western Regional Office has issued a clarification on Clause 2.14 (Faculty Cadre Ratio). Please submit your compliance affidavit before 15-Nov-2026 to avoid docket auto-rejection.
+          </div>
         </div>
-        <div id="calc-result" class="result-display">
-          Statutory Cut-Off: [Click compute to evaluate]
-        </div>
-        <div id="calc-trail" class="trail-container">
-          <div class="trail-placeholder">Audit log of deducted Sundays and gazetted holidays will appear here...</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Module 4: Cryptographic SHA-256 Rolling Hash Chain Ledger -->
-  <section class="section reveal-section" id="ledger">
-    <div class="section-header">
-      <span class="section-tag reveal-item">Interactive Module 04</span>
-      <h2 class="section-title reveal-item">Cryptographic SHA-256 Rolling Ledger</h2>
-      <p class="section-desc reveal-item">
-        Audit events are chained using the Merkle-Damg&aring;rd linked-token formulation: H<sub>i</sub> = SHA-256(H<sub>i-1</sub> || payload). Test the ledger's linear O(N) tamper detection by injecting an unauthorized mutation below.
-      </p>
-    </div>
-
-    <div class="card reveal-item">
-      <div class="card-header">
-        <div class="card-title">Append-Only Immutable Event Stream</div>
-        <div class="card-actions">
-          <button class="btn btn-outline btn-danger" id="btn-tamper-test">
-            <span>Inject Tamper Mutation (Attack Test)</span>
-          </button>
-          <button class="btn btn-primary btn-glow" id="btn-verify-chain">
-            <span>Verify Cryptographic Integrity</span>
-          </button>
-          <button class="btn btn-outline" id="btn-restore-chain">
-            <span>Restore Authentic Chain</span>
-          </button>
+        <div class="banner-actions">
+          <button class="btn btn-primary btn-sm" id="btn-inst-scroll-deficiency">Resolve Deficiency Now &rarr;</button>
         </div>
       </div>
 
-      <!-- Live Stream Cards -->
-      <div class="ledger-stream" id="ledger-stream"></div>
-    </div>
-  </section>
-
-  <!-- Module 5: MeitY MeghRaj / NIC Cloud Cost Feasibility Explorer -->
-  <section class="section reveal-section" id="costing">
-    <div class="section-header">
-      <span class="section-tag reveal-item">Interactive Module 05</span>
-      <h2 class="section-title reveal-item">MeitY MeghRaj / NIC GI Cloud Feasibility Model</h2>
-      <p class="section-desc reveal-item">
-        Cost models are grounded in official National Informatics Centre (NIC) National Data Centre rate cards. Switch between deployment scenarios below to evaluate realistic infrastructure budgets.
-      </p>
-    </div>
-
-    <div class="grid-2">
-      <div class="card reveal-item">
+      <!-- Application Status Tracker -->
+      <div class="card inst-docket-card">
         <div class="card-header">
-          <div class="card-title">Select Sizing Scenario</div>
+          <div>
+            <div class="card-title">Active Approval Application: AICTE-2026-ENG-4921</div>
+            <div class="card-sub">Program: UG Engineering &amp; Technology (Intake: 600 Seats) &bull; Academic Year: 2026–27</div>
+          </div>
+          <span class="stage-badge status-warning" id="inst-docket-status">DEFICIENCY_PENDING</span>
         </div>
-        <select id="cost-scenario-select" class="input-field" style="margin-bottom: 1.5rem;">
-          <option value="proto">Scenario 1: Student Prototype (Free Tier / Docker)</option>
-          <option value="regional" selected>Scenario 2: Regional Pilot (50 Colleges, 300 Filings)</option>
-          <option value="scale">Scenario 3: Scale Pilot (2,500 Colleges, 10,000 Filings)</option>
-        </select>
 
-        <div class="cost-metrics">
-          <div class="cost-metric">
-            <small class="cost-label">ESTIMATED MONTHLY COST:</small>
-            <div id="cost-monthly-val" class="cost-value primary">₹28,500 / month</div>
+        <!-- Visual Stage Stepper -->
+        <div class="stepper-container" id="inst-stepper">
+          <div class="step-item completed">
+            <div class="step-circle">&#10003;</div>
+            <div class="step-label">Draft &amp; Fees</div>
           </div>
-          <div class="cost-metric">
-            <small class="cost-label">ANNUAL OPERATING TCO:</small>
-            <div id="cost-annual-val" class="cost-value gold">~₹3,42,000 / year</div>
+          <div class="step-item completed">
+            <div class="step-circle">&#10003;</div>
+            <div class="step-label">Submitted</div>
           </div>
-          <div class="cost-metric">
-            <small class="cost-label">INFRASTRUCTURE ALLOCATION:</small>
-            <div id="cost-sizing-val" class="cost-sizing">50 Colleges / 300 Filings, 2x VMs, Managed Postgres, 250 GB Vault</div>
+          <div class="step-item active">
+            <div class="step-circle">3</div>
+            <div class="step-label">Scrutiny Verification</div>
+          </div>
+          <div class="step-item">
+            <div class="step-circle">4</div>
+            <div class="step-label">EVC Physical Visit</div>
+          </div>
+          <div class="step-item">
+            <div class="step-circle">5</div>
+            <div class="step-label">EOA Grant</div>
           </div>
         </div>
       </div>
 
-      <div class="card reveal-item">
-        <div class="card-header">
-          <div class="card-title">NIC MeghRaj Indicative Tariff Card</div>
+      <div class="grid-2">
+        <!-- Interactive Deficiency Response Section -->
+        <div class="card" id="inst-deficiency-box">
+          <div class="card-header">
+            <div class="card-title">Statutory Deficiency Action Center</div>
+            <span class="badge badge-danger">High Urgency</span>
+          </div>
+          <p class="card-desc">
+            <strong>Cited Clause:</strong> AICTE APH 2024-27 Clause 2.14 (Cadre Ratio 1:2:6 for Professors, Associate Professors, and Assistant Professors).
+          </p>
+          <div class="deficiency-notice-content">
+            "Discrepancy detected in Computer Science &amp; AI faculty strength. Total 4 vacancies in cadre of Associate Professor. Submit governing body appointment resolution or undertaking."
+          </div>
+
+          <form id="form-inst-deficiency" class="deficiency-form">
+            <label class="form-label" for="inst-reply-text">Institution Compliance Statement / Remarks</label>
+            <textarea id="inst-reply-text" class="form-textarea" rows="3" placeholder="Enter formal institutional compliance remarks, appointment memo references, or undertaking details..."></textarea>
+
+            <div class="form-group" style="margin-top: 0.75rem;">
+              <label class="form-label">Attach Supporting Evidence (PDF)</label>
+              <div class="mock-file-input" id="inst-file-picker">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                <span id="inst-filename">BOG_Resolution_Cadre_Rectification_2026.pdf (1.4 MB)</span>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-glow btn-full" style="margin-top: 1rem;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              <span>Submit Compliance &bull; Transfer Custody Clock to AICTE</span>
+            </button>
+          </form>
         </div>
-        <div class="table-wrap">
-          <table class="data-table">
+
+        <!-- Continuing Obligations Register -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Continuing Obligations Register</div>
+            <span class="badge badge-info">Post-Approval Safeguards</span>
+          </div>
+          <p class="card-desc">
+            Prevents institutional amnesia by proactively monitoring recurring multi-year statutory requirements beyond initial approval.
+          </p>
+
+          <div class="obligations-list">
+            <div class="obligation-item warning">
+              <div class="ob-icon">&#9888;</div>
+              <div class="ob-info">
+                <strong>Annual Fire Safety NOC</strong>
+                <span>Issued by Municipal Fire Brigade &bull; Expires: <strong>28 Days Left</strong></span>
+              </div>
+              <button class="btn btn-outline btn-xs btn-renew-fire">Upload Renewal</button>
+            </div>
+
+            <div class="obligation-item valid">
+              <div class="ob-icon">&#10003;</div>
+              <div class="ob-info">
+                <strong>30-Year Registered Land Lease Deed</strong>
+                <span>Sub-Registrar Office, Haveli &bull; Valid till: <strong>31-May-2054</strong></span>
+              </div>
+              <span class="badge badge-success">30-Yr Compliant</span>
+            </div>
+
+            <div class="obligation-item valid">
+              <div class="ob-icon">&#10003;</div>
+              <div class="ob-info">
+                <strong>NBA Accreditation Status</strong>
+                <span>Mechanical &amp; Civil Engg &bull; Valid till: <strong>30-Jun-2028</strong></span>
+              </div>
+              <span class="badge badge-success">Active Tier-1</span>
+            </div>
+
+            <div class="obligation-item valid">
+              <div class="ob-icon">&#10003;</div>
+              <div class="ob-info">
+                <strong>Anti-Ragging Committee &amp; Squad Notification</strong>
+                <span>Notified on Institutional Portal &bull; Annual Compliance Logged</span>
+              </div>
+              <span class="badge badge-success">Verified</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2-Phase Document Repository Table -->
+      <div class="card" style="margin-top: 1.5rem;">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Statutory Document Vault (2-Phase Verification: SUBMITTED &ne; VERIFIED)</div>
+            <div class="card-sub">Assisted by AI OCR boundary extraction with mandatory human officer attestation.</div>
+          </div>
+          <span class="sih-badge">Rule 70(5) Compliant</span>
+        </div>
+
+        <div class="table-responsive">
+          <table class="data-table" id="inst-doc-table">
             <thead>
               <tr>
-                <th>Service Component</th>
-                <th>Official Tariff</th>
+                <th>Document Name</th>
+                <th>Statutory Authority</th>
+                <th>Submission Timestamp</th>
+                <th>AI Pre-Check Status</th>
+                <th>Officer Verification Status</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td>Base IaaS VM (1 vCPU, 1 GB RAM, 70 GB)</td>
-                <td><strong>₹2,320</strong> / month</td>
+                <td><strong>30-Year Registered Land Lease</strong></td>
+                <td>Sub-Registrar / Revenue Dept</td>
+                <td>2026-10-12 11:24</td>
+                <td><span class="badge badge-success">&#10003; 100% Match (4.8 Acres)</span></td>
+                <td><span class="badge badge-success">VERIFIED &amp; LOCKED</span></td>
+                <td><button class="btn btn-outline btn-xs" onclick="Toast.show('Document locked under verified hash.', 'info')">View Proof</button></td>
               </tr>
               <tr>
-                <td>vCPU Add-on</td>
-                <td><strong>₹557</strong> / month / core</td>
+                <td><strong>Fire Safety NOC Certificate</strong></td>
+                <td>Chief Fire Officer</td>
+                <td>2026-10-14 16:02</td>
+                <td><span class="badge badge-warning">&#9888; Expiry Warning &lt; 30d</span></td>
+                <td><span class="badge badge-warning">RENEWAL_REQUIRED</span></td>
+                <td><button class="btn btn-primary btn-xs" onclick="document.getElementById('btn-inst-upload-doc').click()">Upload NOC</button></td>
               </tr>
               <tr>
-                <td>RAM Add-on</td>
-                <td><strong>₹108</strong> / month / GB</td>
+                <td><strong>Municipal Built-up Area Blueprint</strong></td>
+                <td>Municipal Corporation Town Planning</td>
+                <td>2026-10-15 09:30</td>
+                <td><span class="badge badge-success">&#10003; Built-up: 18,500 sq.m</span></td>
+                <td><span class="badge badge-info">PENDING_SCRUTINY</span></td>
+                <td><button class="btn btn-outline btn-xs" onclick="Toast.show('File SHA-256 Hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855', 'info')">Hash Info</button></td>
               </tr>
               <tr>
-                <td>High-Performance NVMe SSD Storage</td>
-                <td><strong>₹73,200</strong> / TB / year</td>
-              </tr>
-              <tr>
-                <td>Encrypted Archival Object Storage</td>
-                <td><strong>₹20,900</strong> / TB / year</td>
+                <td><strong>Faculty Cadre Ratio Affidavit</strong></td>
+                <td>Notary Public / AICTE Form</td>
+                <td>2026-10-24 14:10</td>
+                <td><span class="badge badge-danger">&#10007; Shortfall in Associate Profs</span></td>
+                <td><span class="badge badge-danger">DEFICIENCY_RAISED</span></td>
+                <td><button class="btn btn-primary btn-xs" onclick="document.getElementById('btn-inst-scroll-deficiency').click()">Rectify</button></td>
               </tr>
             </tbody>
           </table>
         </div>
       </div>
     </div>
-  </section>
 
-  <!-- Module 6: Core Relational Schemas & Source Code -->
-  <section class="section reveal-section" id="code-assets">
-    <div class="section-header">
-      <span class="section-tag reveal-item">Interactive Module 06</span>
-      <h2 class="section-title reveal-item">Relational Schemas & Core Source Modules</h2>
-      <p class="section-desc reveal-item">
-        Inspect the production-ready source code powering the SOUL NETRA orchestrator. All files are deposited in accordance with Rule 70(5) of the Copyright Rules, 2013.
-      </p>
+    <!-- =======================================================================
+         ENDPOINT 3: SCRUTINY & REGIONAL OFFICER DESK (#/scrutiny)
+         ======================================================================= -->
+    <div class="page-view" id="view-scrutiny">
+      <div class="endpoint-header">
+        <div class="endpoint-meta">
+          <span class="badge badge-council">AICTE Council Officer Desk</span>
+          <span class="institution-name-display">Western Regional Office (WRO), Mumbai</span>
+          <span class="pid-tag">Officer ID: RO-WRO-402 &bull; Active Jurisdiction: Maharashtra &amp; Goa</span>
+        </div>
+        <div class="endpoint-actions">
+          <button class="btn btn-outline btn-sm" id="btn-scrutiny-filter-all">All (18)</button>
+          <button class="btn btn-outline btn-sm" id="btn-scrutiny-filter-critical" style="color: var(--accent-red);">SLA Critical (3)</button>
+          <button class="btn btn-primary btn-sm" id="btn-scrutiny-issue-deficiency">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+            Issue Formal Deficiency
+          </button>
+        </div>
+      </div>
+
+      <!-- Scrutiny Split-Clock SLA Queue Indicator -->
+      <div class="scrutiny-kpi-bar">
+        <div class="kpi-item">
+          <div class="kpi-num">18</div>
+          <div class="kpi-label">Active Regional Queue</div>
+        </div>
+        <div class="kpi-item">
+          <div class="kpi-num" style="color: var(--accent-amber);">4.2 Days</div>
+          <div class="kpi-label">Average Council Review Latency</div>
+        </div>
+        <div class="kpi-item">
+          <div class="kpi-num" style="color: var(--brand-cyan);">100%</div>
+          <div class="kpi-label">Parshvanath Timetable Compliance</div>
+        </div>
+        <div class="kpi-item">
+          <div class="kpi-num" style="color: var(--accent-green);">12</div>
+          <div class="kpi-label">EOA Grants Completed</div>
+        </div>
+      </div>
+
+      <!-- Applications Queue & Active Inspection Workbench -->
+      <div class="grid-3" style="grid-template-columns: 1fr 2fr;">
+        <!-- Left: Applications Queue List -->
+        <div class="card" style="padding: 1rem;">
+          <div class="card-header" style="margin-bottom: 0.75rem;">
+            <div class="card-title" style="font-size: 0.95rem;">Scrutiny Queue</div>
+            <span class="badge badge-info" id="queue-count-badge">4 Selected</span>
+          </div>
+
+          <div class="scrutiny-queue-list" id="scrutiny-queue-list">
+            <div class="queue-item active" data-app="AICTE-2026-ENG-4921">
+              <div class="queue-item-header">
+                <strong>COEP Tech Univ, Pune</strong>
+                <span class="badge badge-warning">DEFICIENCY</span>
+              </div>
+              <div class="queue-meta">PID: 1-10928371 &bull; UG Engg (600 Seats)</div>
+              <div class="queue-sla">SLA: Council Clock PAUSED (College Clock: 8d)</div>
+            </div>
+
+            <div class="queue-item" data-app="AICTE-2026-ENG-5102">
+              <div class="queue-item-header">
+                <strong>VJTI Mumbai</strong>
+                <span class="badge badge-info">INSPECTION</span>
+              </div>
+              <div class="queue-meta">PID: 1-2849102 &bull; New AI Specialization</div>
+              <div class="queue-sla" style="color: var(--brand-cyan);">Council Clock: 2d remaining</div>
+            </div>
+
+            <div class="queue-item" data-app="AICTE-2026-ENG-6391">
+              <div class="queue-item-header">
+                <strong>Sardar Patel College (SPCE)</strong>
+                <span class="badge badge-danger">CRITICAL SLA</span>
+              </div>
+              <div class="queue-meta">PID: 1-3819401 &bull; Extension of Approval</div>
+              <div class="queue-sla" style="color: var(--accent-red);">Council SLA: 18h remaining!</div>
+            </div>
+
+            <div class="queue-item" data-app="AICTE-2026-PHARM-1082">
+              <div class="queue-item-header">
+                <strong>Bombay College of Pharmacy</strong>
+                <span class="badge badge-success">CLEARED</span>
+              </div>
+              <div class="queue-meta">PID: 1-901827 &bull; B.Pharm Expansion</div>
+              <div class="queue-sla">Ready for Council EOA Signature</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Active Scrutiny Inspection Desk -->
+        <div class="card" id="scrutiny-workbench">
+          <div class="card-header">
+            <div>
+              <div class="card-title" id="workbench-title">Inspection Dossier: COEP Technological University</div>
+              <div class="card-sub" id="workbench-subtitle">Application Docket #AICTE-2026-ENG-4921 &bull; Category: Extension of Approval (EOA)</div>
+            </div>
+            <div class="workbench-status" id="workbench-badge">
+              <span class="badge badge-warning">Deficiency Pending</span>
+            </div>
+          </div>
+
+          <!-- Statutory Scrutiny Checklist with Rule Citations -->
+          <div class="scrutiny-checklist">
+            <h4 style="margin-bottom: 0.75rem; font-size: 0.9rem; color: var(--text-secondary);">Statutory Verification Checklist (AICTE APH 2024–27 Mandates)</h4>
+
+            <div class="check-item verified">
+              <input type="checkbox" id="chk-land" checked disabled>
+              <label for="chk-land">
+                <strong>Clause 2.4.1 &mdash; Land Title &amp; 30-Year Continuous Lease:</strong>
+                <span>Title verified free from all encumbrances. Area: 4.8 Acres (Mega City Norm &gt; 2.5 Acres).</span>
+              </label>
+              <span class="badge badge-success">Rule Verified</span>
+            </div>
+
+            <div class="check-item verified">
+              <input type="checkbox" id="chk-builtup" checked disabled>
+              <label for="chk-builtup">
+                <strong>Clause 4.2 &mdash; Instructional &amp; Administrative Built-up Area:</strong>
+                <span>18,500 sq.m verified against municipal blueprints and fire clearance norms.</span>
+              </label>
+              <span class="badge badge-success">Rule Verified</span>
+            </div>
+
+            <div class="check-item deficient">
+              <input type="checkbox" id="chk-cadre" disabled>
+              <label for="chk-cadre">
+                <strong>Clause 2.14 &mdash; Faculty Cadre Ratio (1 Professor : 2 Assoc : 6 Asst):</strong>
+                <span>Shortfall detected in Associate Professor cadre (4 vacancies in CS/AI branch).</span>
+              </label>
+              <span class="badge badge-danger">DEFICIENT</span>
+            </div>
+
+            <div class="check-item verified">
+              <input type="checkbox" id="chk-access" checked disabled>
+              <label for="chk-access">
+                <strong>Clause 5.1 &mdash; Barrier-Free Ramp &amp; Specially-Abled Restrooms:</strong>
+                <span>PWD accessibility compliance certified with geo-tagged photographic evidence.</span>
+              </label>
+              <span class="badge badge-success">Rule Verified</span>
+            </div>
+          </div>
+
+          <!-- Officer Decision Actions -->
+          <div class="workbench-actions">
+            <button class="btn btn-danger btn-sm" id="btn-officer-raise-deficiency">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              <span>Issue Statutory Deficiency</span>
+            </button>
+            <button class="btn btn-outline btn-sm" id="btn-officer-recommend-evc">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              <span>Schedule EVC Physical Visit</span>
+            </button>
+            <button class="btn btn-primary btn-glow btn-sm" id="btn-officer-grant-eoa">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              <span>Clear Scrutiny &bull; Issue EOA 2026-27</span>
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div class="grid-3">
-      <div class="card code-card reveal-item">
-        <div class="card-header">
-          <div class="card-title">schema.sql</div>
-          <span class="sih-badge">SQL</span>
+    <!-- =======================================================================
+         ENDPOINT 4: AUDIT LEDGER PORTAL (#/audit-ledger)
+         ======================================================================= -->
+    <div class="page-view" id="view-audit-ledger">
+      <div class="endpoint-header">
+        <div class="endpoint-meta">
+          <span class="badge badge-audit">Vigilance &amp; Forensic Audit Portal</span>
+          <span class="institution-name-display">Comptroller &amp; Auditor General / CVC Ledger</span>
+          <span class="pid-tag">Cryptographic SHA-256 Rolling Hash Chain &bull; Immutable Non-Repudiation</span>
         </div>
-        <p class="card-desc">
-          PostgreSQL 16 11-table 3NF relational schema, UUID primary keys, and immutable append-only triggers.
-        </p>
-        <a href="code_assets/schema.sql" class="btn btn-outline btn-full" download>
-          <span>Download schema.sql</span>
-        </a>
+        <div class="endpoint-actions">
+          <button class="btn btn-outline btn-sm" id="btn-verify-chain">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Verify Full Chain Integrity
+          </button>
+          <button class="btn btn-danger btn-sm" id="btn-tamper-test">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="1" y1="1" x2="23" y2="23"/><path d="M21 21l-6-6m-6-6l-6-6"/><path d="M12 2a10 10 0 0 1 10 10"/></svg>
+            Simulate Malicious Tamper Attack
+          </button>
+          <button class="btn btn-outline btn-sm" id="btn-restore-chain">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M3 21v-5h5"/></svg>
+            Restore Authentic Chain
+          </button>
+          <button class="btn btn-primary btn-sm" id="btn-export-audit-cert">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Export Audit Certificate
+          </button>
+        </div>
       </div>
 
-      <div class="card code-card reveal-item">
+      <!-- Ledger Mathematical Guarantee Card -->
+      <div class="card" style="margin-bottom: 1.5rem;">
         <div class="card-header">
-          <div class="card-title">workflow_engine.py</div>
-          <span class="sih-badge">Python 3.11</span>
+          <div class="card-title">Mathematical Non-Repudiation Architecture</div>
+          <span class="sih-badge">Algorithm: H(i) = SHA256( H(i-1) || Actor || Action || Payload )</span>
         </div>
         <p class="card-desc">
-          Polymorphic state machine engine, 4 route topologies, and millisecond split-clock delay accumulator.
+          Every regulatory docket transition, deficiency issuance, clock custody switch, and document verification is permanently bound to the preceding state by a SHA-256 rolling hash. Any clandestine mutation or illicit backdating breaks the downstream chain instantly with an O(N) linear mismatch.
         </p>
-        <a href="code_assets/workflow_engine.py" class="btn btn-outline btn-full" download>
-          <span>Download workflow_engine.py</span>
-        </a>
       </div>
 
-      <div class="card code-card reveal-item">
-        <div class="card-header">
-          <div class="card-title">audit_ledger.py</div>
-          <span class="sih-badge">Python 3.11</span>
-        </div>
-        <p class="card-desc">
-          Append-only SHA-256 rolling hash chain generator and O(N) linear tamper verification algorithm.
-        </p>
-        <a href="code_assets/audit_ledger.py" class="btn btn-outline btn-full" download>
-          <span>Download audit_ledger.py</span>
-        </a>
+      <!-- Live Ledger Stream Container -->
+      <div class="ledger-stream-container" id="ledger-stream">
+        <!-- Rendered dynamically by LedgerSimulator in app.js -->
       </div>
     </div>
-  </section>
 
-  <!-- Module 7: Official Copyright Registration Dossier (VIEW ONLY) -->
-  <section class="section reveal-section" id="dossier">
-    <div class="card dossier-card reveal-item">
-      <div class="dossier-icon">
-        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+    <!-- =======================================================================
+         ENDPOINT 5: SLA ANALYTICS & SPLIT-CLOCK ENGINE (#/sla-analytics)
+         ======================================================================= -->
+    <div class="page-view" id="view-sla-analytics">
+      <div class="endpoint-header">
+        <div class="endpoint-meta">
+          <span class="badge badge-sla">SLA Analytics &amp; Split-Clock Engine</span>
+          <span class="institution-name-display">Supreme Court <em>Parshvanath</em> Timetable Compliance</span>
+          <span class="pid-tag">Dual-Accumulator Architecture &bull; Millisecond Resolution</span>
+        </div>
+        <div class="endpoint-actions">
+          <button class="btn btn-outline btn-sm" id="btn-custody-reset">Reset Clock Accumulators</button>
+        </div>
       </div>
-      <span class="sih-badge dossier-badge">GOVERNMENT OF INDIA &bull; COPYRIGHT OFFICE (DPIIT)</span>
-      <h2 class="dossier-title">Official Software Copyright Technical Dossier</h2>
-      <p class="dossier-desc">
-        Complete 35-page formal submission document containing Certificate of Institutional Endorsement, Form XIV Statement of Particulars, Declaration of Authorship, Synchronized Table of Contents, 10 Research Chapters, and Rule 70(5) Source Code Deposit.
-      </p>
-      <div class="dossier-actions">
-        <button class="btn btn-primary btn-glow btn-lg" id="btn-open-report">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-          <span>View Secure Dossier (Read Only)</span>
-        </button>
+
+      <!-- Live Dual Split-Clock Meter -->
+      <div class="split-clock-dashboard" style="margin-bottom: 2rem;">
+        <div class="meter-grid">
+          <div class="meter-box" id="box-inst">
+            <div class="meter-header">
+              <span class="meter-label">Institutional Clock</span>
+              <span class="meter-owner-badge badge-inst">COLLEGE RESPONSIBILITY</span>
+            </div>
+            <div class="meter-time" id="meter-inst-val">0h 00m 00.0s</div>
+            <div class="meter-sub">Active during Deficiency rectification &amp; fee payment</div>
+          </div>
+
+          <div class="meter-box active-owner" id="box-admin">
+            <div class="meter-header">
+              <span class="meter-label">Council Review Clock</span>
+              <span class="meter-owner-badge badge-council">AICTE SLA ACCOUNTABILITY</span>
+            </div>
+            <div class="meter-time" id="meter-admin-val">0h 00m 00.0s</div>
+            <div class="meter-sub">Active during Scrutiny verification &amp; EVC committee appraisal</div>
+          </div>
+
+          <div class="meter-box" id="box-paused">
+            <div class="meter-header">
+              <span class="meter-label">Statutory Pause Clock</span>
+              <span class="meter-owner-badge badge-pause">EXTERNAL STAY ORDER</span>
+            </div>
+            <div class="meter-time" id="meter-paused-val">0h 00m 00.0s</div>
+            <div class="meter-sub">Active during High Court stays &amp; natural force majeure</div>
+          </div>
+        </div>
+
+        <div class="attribution-bar-container">
+          <div class="attribution-bar">
+            <div class="bar-segment bar-inst" id="bar-inst" style="width: 50%;"></div>
+            <div class="bar-segment bar-admin" id="bar-admin" style="width: 50%;"></div>
+          </div>
+          <div class="attribution-labels">
+            <span>Institution Attribution: <strong id="pct-inst">50%</strong></span>
+            <span>Council Review Attribution: <strong id="pct-admin">50%</strong></span>
+          </div>
+        </div>
+
+        <div class="sim-controls">
+          <span class="controls-label">Interactive Clock Custody Switcher:</span>
+          <button class="btn btn-outline btn-sm" id="btn-custody-inst">Transfer Custody &rarr; Institution</button>
+          <button class="btn btn-primary btn-sm" id="btn-custody-admin">Transfer Custody &rarr; Council</button>
+          <button class="btn btn-outline btn-sm" id="btn-custody-pause">Trigger Court Stay / Pause</button>
+        </div>
       </div>
-      <p class="dossier-notice">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-        Protected by digital watermark. Downloading and text copying are disabled for intellectual property protection.
-      </p>
+
+      <div class="grid-2">
+        <!-- Statutory Deadline Calculator with Gazetted Holidays -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Statutory Working-Day Calculator</div>
+            <span class="sih-badge">AICTE Gazetted Calendar</span>
+          </div>
+          <p class="card-desc">
+            Calculates exact statutory deadlines excluding central gazetted holidays, state election days, and weekends under Supreme Court decrees.
+          </p>
+
+          <div class="calc-form">
+            <label class="form-label" for="calc-days">Prescribed Working Days (APH Clause Norm)</label>
+            <div style="display: flex; gap: 0.5rem;">
+              <input type="number" id="calc-days" class="form-input" value="15" min="1" max="90">
+              <button class="btn btn-primary" id="btn-calc-deadline">Compute Deadline</button>
+            </div>
+            <div class="calc-result" id="calc-result" style="margin-top: 1rem; font-weight: 700; color: var(--brand-cyan);">
+              Computed Deadline: &mdash;
+            </div>
+            <div class="calc-trail" id="calc-trail" style="margin-top: 0.5rem; font-size: 0.82rem; color: var(--text-muted);"></div>
+          </div>
+        </div>
+
+        <!-- Regional Office SLA Benchmark -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Regional Office Turnaround Benchmarks</div>
+            <span class="badge badge-success">Live Stream</span>
+          </div>
+          <p class="card-desc">
+            Comparative performance metrics of AICTE Regional Offices in adjudicating applications against statutory limits.
+          </p>
+
+          <div class="benchmark-list">
+            <div class="benchmark-item">
+              <div class="bm-header">
+                <strong>Western Regional Office (WRO Mumbai)</strong>
+                <span class="bm-days">12.4 Days Avg</span>
+              </div>
+              <div class="progress-bar"><div class="progress-fill" style="width: 82%; background: #10b981;"></div></div>
+            </div>
+
+            <div class="benchmark-item">
+              <div class="bm-header">
+                <strong>Northern Regional Office (NRO Kanpur)</strong>
+                <span class="bm-days">14.1 Days Avg</span>
+              </div>
+              <div class="progress-bar"><div class="progress-fill" style="width: 74%; background: #38bdf8;"></div></div>
+            </div>
+
+            <div class="benchmark-item">
+              <div class="bm-header">
+                <strong>Southern Regional Office (SRO Chennai)</strong>
+                <span class="bm-days">11.8 Days Avg</span>
+              </div>
+              <div class="progress-bar"><div class="progress-fill" style="width: 88%; background: #10b981;"></div></div>
+            </div>
+
+            <div class="benchmark-item">
+              <div class="bm-header">
+                <strong>Eastern Regional Office (ERO Kolkata)</strong>
+                <span class="bm-days">16.5 Days Avg</span>
+              </div>
+              <div class="progress-bar"><div class="progress-fill" style="width: 65%; background: #f59e0b;"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-  </section>
 
-  <!-- Secure Report Viewer Modal Overlay -->
+    <!-- =======================================================================
+         ENDPOINT 6: PUBLIC TRANSPARENCY & VERIFICATION (#/public-verify)
+         ======================================================================= -->
+    <div class="page-view" id="view-public-verify">
+      <div class="endpoint-header">
+        <div class="endpoint-meta">
+          <span class="badge badge-public">Citizen &amp; Student Transparency Desk</span>
+          <span class="institution-name-display">National Technical Institution Verification Portal</span>
+          <span class="pid-tag">Zero Source Code Exposure &bull; 100% Verified Regulatory Approvals</span>
+        </div>
+      </div>
+
+      <!-- Public Search Card -->
+      <div class="card search-hero-card">
+        <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem;">
+          Verify College Approval &amp; Valid Intake Status
+        </h3>
+        <p class="card-desc" style="margin-bottom: 1.25rem;">
+          Search official AICTE Permanent Institute ID (PID), college name, or city to confirm Extension of Approval (EOA) validity, sanctioned student seats, and building safety clearances.
+        </p>
+
+        <div class="public-search-bar">
+          <input type="text" id="public-search-input" class="search-input" placeholder="Search by Institute Name, City (e.g. Pune, Mumbai, Delhi), or PID (e.g. 1-10928371)...">
+          <button class="btn btn-primary" id="btn-public-search">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <span>Search</span>
+          </button>
+        </div>
+
+        <div class="quick-tags">
+          <span class="quick-tag-label">Popular Searches:</span>
+          <button class="quick-tag" data-query="COEP">COEP Technological Univ</button>
+          <button class="quick-tag" data-query="VJTI">VJTI Mumbai</button>
+          <button class="quick-tag" data-query="1-3819401">SPCE Mumbai (PID)</button>
+          <button class="quick-tag" data-query="Pharmacy">Pharmacy Colleges</button>
+        </div>
+      </div>
+
+      <!-- Search Results List -->
+      <div class="public-results-grid" id="public-results-grid">
+        <!-- Rendered dynamically by PublicVerifyModule in app.js -->
+      </div>
+    </div>
+
+  </main>
+
+  <!-- =========================================================================
+       AUTHENTICATION / LOGIN MODAL (CLIENT-SIDE WORKING AUTH)
+       ========================================================================= -->
+  <div class="login-modal-overlay" id="login-modal-overlay">
+    <div class="login-modal-container">
+      <div class="login-modal-header">
+        <div class="login-modal-title">
+          <img src="logo.png" alt="Soul Netra" class="login-modal-logo">
+          <div>
+            <strong>SOUL NETRA Unified Regulatory Access</strong>
+            <span class="login-modal-sub">Single Sign-On (SSO) Role-Based Portal</span>
+          </div>
+        </div>
+        <button class="login-close-btn" id="login-close-btn">&times;</button>
+      </div>
+
+      <!-- Quick Role Selectors for Instant Testing -->
+      <div class="login-modal-body">
+        <div class="auth-tabs">
+          <button class="auth-tab active" id="tab-btn-quick">1-Click Demo Roles</button>
+          <button class="auth-tab" id="tab-btn-custom">Custom Credentials</button>
+        </div>
+
+        <!-- Tab 1: One-Click Quick Role Switcher -->
+        <div class="auth-tab-content active" id="auth-content-quick">
+          <p class="auth-desc">
+            Select any official role below to immediately test that persona's working permissions, portals, and decision capabilities without typing passwords:
+          </p>
+
+          <div class="quick-roles-list">
+            <!-- Role 1: Institutional Applicant -->
+            <div class="quick-role-item" data-role="INSTITUTION" data-name="Dr. Sunita Deshmukh" data-org="COEP Technological University, Pune" data-email="principal@coep.ac.in">
+              <div class="role-icon">🎓</div>
+              <div class="role-info">
+                <strong>Technical Institution Head / Registrar</strong>
+                <span>Dr. Sunita Deshmukh &bull; COEP Tech Pune</span>
+                <small>Full access to Application Docket, Deficiency Response, and Document Vault.</small>
+              </div>
+              <button class="btn btn-outline btn-xs btn-role-select">Sign In as College &rarr;</button>
+            </div>
+
+            <!-- Role 2: AICTE Scrutiny Officer -->
+            <div class="quick-role-item" data-role="COUNCIL_OFFICER" data-name="Dr. Ramesh Joshi" data-org="AICTE Western Regional Office, Mumbai" data-email="ro.mumbai@aicte-india.org">
+              <div class="role-icon">🏛️</div>
+              <div class="role-info">
+                <strong>AICTE Scrutiny Officer / Regional Director</strong>
+                <span>Dr. Ramesh Joshi &bull; AICTE WRO Mumbai</span>
+                <small>Review dockets, issue statutory deficiency notices, and clear approvals.</small>
+              </div>
+              <button class="btn btn-outline btn-xs btn-role-select">Sign In as Officer &rarr;</button>
+            </div>
+
+            <!-- Role 3: CAG / Vigilance Auditor -->
+            <div class="quick-role-item" data-role="AUDITOR" data-name="K. S. Narayanan" data-org="Comptroller & Auditor General / CVC" data-email="auditor.cag@gov.in">
+              <div class="role-icon">🛡️</div>
+              <div class="role-info">
+                <strong>Central Vigilance &amp; CAG Auditor</strong>
+                <span>K. S. Narayanan &bull; CVC / CAG New Delhi</span>
+                <small>Deep forensic verification of SHA-256 rolling ledger and RTI audit trails.</small>
+              </div>
+              <button class="btn btn-outline btn-xs btn-role-select">Sign In as Auditor &rarr;</button>
+            </div>
+
+            <!-- Role 4: Citizen / Public -->
+            <div class="quick-role-item" data-role="PUBLIC" data-name="Public Citizen / Student" data-org="General Public / Commuter" data-email="citizen@public.nic.in">
+              <div class="role-icon">👥</div>
+              <div class="role-info">
+                <strong>Student / Parent / Citizen (Public)</strong>
+                <span>Public Verification &amp; Transparency Portal</span>
+                <small>Open guest access to verify genuine institute approval letters.</small>
+              </div>
+              <button class="btn btn-outline btn-xs btn-role-select">Continue as Public &rarr;</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 2: Custom Login Form -->
+        <div class="auth-tab-content" id="auth-content-custom">
+          <form id="form-custom-login" class="custom-login-form">
+            <div class="form-group">
+              <label class="form-label" for="login-email">Official Email Address</label>
+              <input type="email" id="login-email" class="form-input" placeholder="e.g. principal@college.ac.in" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="login-password">Password</label>
+              <input type="password" id="login-password" class="form-input" placeholder="••••••••" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="login-role-select">Assign Regulatory Role</label>
+              <select id="login-role-select" class="form-select">
+                <option value="INSTITUTION">Technical Institution Applicant</option>
+                <option value="COUNCIL_OFFICER">AICTE Scrutiny / Regional Officer</option>
+                <option value="AUDITOR">CAG / Central Vigilance Auditor</option>
+                <option value="PUBLIC">Public Citizen / Student</option>
+              </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-glow btn-full" style="margin-top: 1rem;">
+              <span>Authenticate &amp; Launch Session</span>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       MODAL: FORMAL DEFICIENCY ISSUANCE (FOR SCRUTINY DESK)
+       ========================================================================= -->
+  <div class="deficiency-modal-overlay" id="deficiency-modal-overlay">
+    <div class="deficiency-modal-container">
+      <div class="login-modal-header">
+        <div class="login-modal-title">
+          <span style="font-size: 1.5rem;">⚠️</span>
+          <div>
+            <strong>Issue Formal Statutory Deficiency Notice</strong>
+            <span class="login-modal-sub">AICTE APH 2024–27 Mandate &bull; Pauses Council Clock</span>
+          </div>
+        </div>
+        <button class="login-close-btn" id="deficiency-close-btn">&times;</button>
+      </div>
+
+      <form id="form-issue-deficiency" class="deficiency-modal-form">
+        <div class="form-group">
+          <label class="form-label">Target Application</label>
+          <input type="text" id="def-target-app" class="form-input" value="AICTE-2026-ENG-4921 (COEP Tech Univ)" readonly>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Statutory Rule Clause Citation</label>
+          <select id="def-clause-select" class="form-select">
+            <option value="Clause 2.14">Clause 2.14 — Faculty Cadre Ratio Shortfall (1:2:6)</option>
+            <option value="Clause 4.2.1">Clause 4.2.1 — Built-up Area Shortfall against Norms</option>
+            <option value="Clause 2.4.1">Clause 2.4.1 — Land Lease Deed Continuity Defect</option>
+            <option value="Clause 5.1">Clause 5.1 — Barrier-Free Accessibility &amp; Lift NOC</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Officer Deficiency Remarks</label>
+          <textarea id="def-remarks" class="form-textarea" rows="3" required placeholder="Enter precise statutory deficiency observations and required rectification evidence..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Statutory Rectification Window</label>
+          <input type="text" class="form-input" value="15 Working Days (Excluding Gazetted Holidays)" readonly>
+        </div>
+
+        <div class="modal-actions" style="display: flex; gap: 0.75rem; justify-content: flex-end; margin-top: 1rem;">
+          <button type="button" class="btn btn-outline" id="btn-cancel-deficiency">Cancel</button>
+          <button type="submit" class="btn btn-danger btn-glow">
+            <span>Issue Notice &bull; Stop Council Clock</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       MODAL: STATUTORY DOCUMENT UPLOAD (FOR INSTITUTION PORTAL)
+       ========================================================================= -->
+  <div class="upload-modal-overlay" id="upload-modal-overlay">
+    <div class="upload-modal-container">
+      <div class="login-modal-header">
+        <div class="login-modal-title">
+          <span style="font-size: 1.5rem;">📄</span>
+          <div>
+            <strong>Upload Statutory Compliance Document</strong>
+            <span class="login-modal-sub">2-Phase Verification &bull; SHA-256 Hashed on Ingestion</span>
+          </div>
+        </div>
+        <button class="login-close-btn" id="upload-close-btn">&times;</button>
+      </div>
+
+      <form id="form-upload-document" class="upload-modal-form">
+        <div class="form-group">
+          <label class="form-label">Document Category</label>
+          <select id="upload-doc-category" class="form-select">
+            <option value="FIRE_NOC">Annual Fire Safety Clearance NOC</option>
+            <option value="LAND_LEASE">30-Year Registered Land Lease Deed</option>
+            <option value="BUILTUP_PLAN">Municipal Town Planning Sanctioned Blueprint</option>
+            <option value="CADRE_AFFIDAVIT">Faculty Cadre Ratio &amp; Pay Scale Affidavit</option>
+            <option value="ANTI_RAGGING">Anti-Ragging Committee Gazette Notification</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Issuing Authority / Sub-Registrar</label>
+          <input type="text" id="upload-doc-authority" class="form-input" placeholder="e.g. Chief Fire Officer, Municipal Corporation" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Validity Expiration Date</label>
+          <input type="date" id="upload-doc-expiry" class="form-input" required value="2027-10-25">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Select Document File (PDF / Scanned PDF)</label>
+          <div class="mock-file-input">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            <span id="upload-selected-file">Fire_NOC_Renewal_2026_27.pdf (2.1 MB)</span>
+          </div>
+        </div>
+
+        <div class="modal-actions" style="display: flex; gap: 0.75rem; justify-content: flex-end; margin-top: 1rem;">
+          <button type="button" class="btn btn-outline" id="btn-cancel-upload">Cancel</button>
+          <button type="submit" class="btn btn-primary btn-glow">
+            <span>Ingest Document &amp; Run AI Pre-Check</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       SECURE REPORT VIEWER MODAL OVERLAY (PROTECTED COPYRIGHT DOSSIER)
+       ========================================================================= -->
   <div class="report-viewer-overlay" id="report-viewer-overlay">
     <div class="report-viewer-container">
       <div class="report-viewer-header">
         <div class="report-viewer-title">
           <img src="logo.png" alt="Soul Netra" class="report-logo">
           <div>
-            <strong>SOUL NETRA — Copyright Technical Dossier</strong>
-            <span class="report-viewer-sub">VIEW ONLY • Watermark Protected • Copy Disabled</span>
+            <strong>SOUL NETRA &mdash; Official Copyright Technical Dossier</strong>
+            <span class="report-viewer-sub">VIEW ONLY &bull; Watermark Protected &bull; Downloading &amp; Copy Disabled</span>
           </div>
         </div>
         <button class="report-close-btn" id="report-close-btn" title="Close Viewer">
@@ -509,20 +1130,20 @@
       <div class="footer-col" style="grid-column: span 2;">
         <h4>SOUL NETRA (SIH26262)</h4>
         <p style="max-width: 420px;">
-          System for Oversight, Unified Lifecycle &mdash; Network for Evaluation, Tracking, Reporting & Accountability.
-          Developed for the Smart India Hackathon 2026 under the Ministry of Education & AICTE.
+          System for Oversight, Unified Lifecycle &mdash; Network for Evaluation, Tracking, Reporting &amp; Accountability.
+          Developed for the Smart India Hackathon 2026 under the Ministry of Education &amp; AICTE.
         </p>
       </div>
 
       <div class="footer-col">
         <h4>Joint Authors (Equal Credit)</h4>
         <ul>
-          <li><strong>Aditya Patil</strong> &mdash; Backend & ML Engineer</li>
-          <li><strong>Rasik Dhage</strong> &mdash; Team Lead, Hosting & Alignment</li>
-          <li><strong>Dipila Pawar</strong> &mdash; Frontend & UI/UX</li>
-          <li><strong>Vaishnavi Ganjare</strong> &mdash; Regulatory Law & Audits</li>
-          <li><strong>Shraddha Sabale</strong> &mdash; Systems & PPT Research</li>
-          <li><strong>Janhvi Sapra</strong> &mdash; CI/CD & Security Governance</li>
+          <li><strong>Aditya Patil</strong> &mdash; Backend &amp; ML Engineer</li>
+          <li><strong>Rasik Dhage</strong> &mdash; Team Lead, Hosting &amp; Alignment</li>
+          <li><strong>Dipila Pawar</strong> &mdash; Frontend &amp; UI/UX</li>
+          <li><strong>Vaishnavi Ganjare</strong> &mdash; Regulatory Law &amp; Audits</li>
+          <li><strong>Shraddha Sabale</strong> &mdash; Systems &amp; PPT Research</li>
+          <li><strong>Janhvi Sapra</strong> &mdash; CI/CD &amp; Security Governance</li>
         </ul>
       </div>
 
