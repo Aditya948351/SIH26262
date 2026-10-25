@@ -112,8 +112,8 @@ The repository contains a complete, zero-backend-dependency Single Page Applicat
 
 ```bash
 # Clone the repository
-git clone https://github.com/Aditya948351/SIH26262.git
-cd SIH26262/Main_Implementation
+git clone https://github.com/Aditya948351/SOUL_NETRA_1.git
+cd SOUL_NETRA_1/Main_Implementation
 
 # Launch using any static file server or directly open in your browser
 # Option 1: Python HTTP Server
