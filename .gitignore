@@ -3,14 +3,31 @@
 Thumbs.db
 desktop.ini
 
-# Python cache
+# Python cache & scripts
 __pycache__/
 *.py[cod]
 *$py.class
 .pytest_cache/
+*.py
 
-# Node / Editor
+# Database & raw backend source assets (Protect Intellectual Property)
+code_assets/
+*.sql
+schema.sql
+
+# Confidential Reports, Statutory Documents & PDFs (DO NOT PUSH TO GITHUB)
+*.pdf
+*.doc
+*.docx
+docs/
+**/docs/
+vue_scaffold/public/docs/
+vue_scaffold/dist/docs/
+Final_Project_Report/
+
+# Node / Editor / Firebase Cache
 node_modules/
 .vscode/
 .idea/
 .firebase/
+
