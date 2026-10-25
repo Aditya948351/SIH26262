@@ -1577,8 +1577,20 @@ body {
 }
 
 ::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.2);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.4);
+}
+
 /* ==========================================================================
-   Multi-Endpoint Page Views & Router
+   Multi-Endpoint Page Views & Smooth Router Transitions
    ========================================================================== */
 .page-view {
   display: none;
@@ -1586,18 +1598,20 @@ body {
   max-width: 1380px;
   margin: 0 auto;
   padding: 2rem 2rem 6rem 2rem;
-  animation: pageFadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateY(14px);
 }
 
 .page-view.active {
   display: block;
   opacity: 1;
+  transform: translateY(0);
 }
 
 @keyframes pageFadeIn {
   from {
     opacity: 0;
-    transform: translateY(12px);
+    transform: translateY(14px);
   }
   to {
     opacity: 1;
@@ -2570,25 +2584,204 @@ body {
 }
 
 /* ==========================================================================
-   Scrollbar Styling
+   Dedicated Login Screen & Persona Grid Styles (#/login)
    ========================================================================== */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+.login-screen-wrap {
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-::-webkit-scrollbar-track {
-  background: transparent;
+.login-screen-hero {
+  text-align: center;
+  padding: 2.5rem 1rem 3rem 1rem;
 }
 
-::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 184, 0.2);
-  border-radius: 3px;
+.login-hero-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  padding: 0.4rem 1rem;
+  border-radius: 9999px;
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.12), rgba(99, 102, 241, 0.12));
+  color: var(--brand-cyan);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  margin-bottom: 1.5rem;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(148, 163, 184, 0.4);
+.login-screen-title {
+  font-size: 2.25rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  margin-bottom: 0.75rem;
 }
+
+.login-screen-sub {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.login-personas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.persona-card {
+  padding: 1.75rem;
+  border-radius: var(--radius-lg);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.02) 0%, rgba(255, 255, 255, 0.01) 100%),
+    var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.persona-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--brand-cyan), var(--brand-indigo));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.persona-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(56, 189, 248, 0.4);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25);
+}
+
+.persona-card:hover::before {
+  opacity: 1;
+}
+
+.persona-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.persona-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.15), rgba(99, 102, 241, 0.15));
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.persona-meta {
+  flex: 1;
+}
+
+.persona-role-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  margin-bottom: 0.25rem;
+  display: inline-block;
+}
+
+.persona-name {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.persona-org {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.persona-desc {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  flex: 1;
+}
+
+.persona-features {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0.75rem 0.85rem;
+  background: rgba(15, 23, 42, 0.4);
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.persona-action-btn {
+  width: 100%;
+  justify-content: center;
+}
+
+/* Light Mode Overrides for Dropdowns & Session Elements */
+[data-theme="light"] .user-dropdown-menu {
+  background: #ffffff !important;
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.15) !important;
+  color: #0f172a !important;
+}
+
+[data-theme="light"] .dropdown-user-name {
+  color: #0f172a !important;
+}
+
+[data-theme="light"] .dropdown-user-role {
+  color: #2563eb !important;
+}
+
+[data-theme="light"] .dropdown-btn {
+  color: #334155 !important;
+}
+
+[data-theme="light"] .dropdown-btn:hover {
+  background: rgba(0, 0, 0, 0.05) !important;
+  color: #0f172a !important;
+}
+
+[data-theme="light"] .user-chip-btn {
+  background: #ffffff !important;
+  border: 1px solid rgba(37, 99, 235, 0.25) !important;
+  color: #0f172a !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+}
+
+[data-theme="light"] .persona-card {
+  background: #ffffff !important;
+  border-color: rgba(100, 116, 139, 0.18) !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04) !important;
+}
+
+[data-theme="light"] .persona-card:hover {
+  border-color: #2563eb !important;
+  box-shadow: 0 12px 35px rgba(37, 99, 235, 0.12) !important;
+}
+
+[data-theme="light"] .persona-features {
+  background: rgba(241, 245, 249, 0.8) !important;
+  color: #475569 !important;
+}
+
 
 /* ==========================================================================
    Responsive

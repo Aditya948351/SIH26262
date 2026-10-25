@@ -1,18 +1,60 @@
 /**
  * SOUL NETRA (SIH26262) — Multi-Endpoint Client Engine & GovTech Workflow Platform
  * Features:
- * 1. Single Page Application (SPA) Hash Router with Distinct Endpoints
- * 2. Role-Based Client Authentication & Session Manager (No Backend Needed)
- * 3. Institutional Applicant Portal with Deficiency Resolution & 2-Phase Document Vault
- * 4. AICTE Council Scrutiny Desk with Statutory Rule Citations & Split-Clock Transfer
- * 5. Public Transparency & Institutional Approval Verification Desk (Zero Code Leaks)
- * 6. Cryptographic SHA-256 Rolling Hash Chain Ledger with Tamper Attack Simulation
- * 7. Dual-Accumulator Split-Clock SLA Engine & Statutory Working-Day Calculator
- * 8. Protected View-Only Copyright Dossier Viewer with Anti-Copy Watermark
+ * 1. Single Page Application (SPA) Hash Router with Dedicated #/login Screen
+ * 2. Role-Based Client Authentication with Sample Personas & State Preservation
+ * 3. Firebase Cloud Firestore Sync & Hosting Integration
+ * 4. Institution Portal with Real-Time Clock Attribution & 2-Phase Document Vault
+ * 5. AICTE Regional Officer Scrutiny Desk with Statutory Rule Citations
+ * 6. Public Transparency & Institutional Verification Desk (Zero Code Leaks)
+ * 7. Cryptographic SHA-256 Rolling Hash Chain Ledger with Tamper Mutation Detection
+ * 8. Dual-Accumulator Split-Clock SLA Engine & Statutory Working-Day Calculator
+ * 9. Protected View-Only Copyright Dossier Viewer with Anti-Copy Watermark
  */
 
 // ==========================================================================
-// 1. Theme Manager
+// 1. Firebase Cloud Firestore & Sync Engine (Project: sih26262)
+// ==========================================================================
+const FirebaseSync = {
+  db: null,
+  isOnline: false,
+
+  init() {
+    try {
+      if (typeof firebase !== 'undefined') {
+        const firebaseConfig = {
+          projectId: "sih26262",
+          authDomain: "sih26262.firebaseapp.com",
+          storageBucket: "sih26262.appspot.com"
+        };
+        if (!firebase.apps.length) {
+          firebase.initializeApp(firebaseConfig);
+        }
+        this.db = firebase.firestore();
+        this.isOnline = true;
+        console.log("Firebase Firestore connected for project sih26262");
+      }
+    } catch (err) {
+      console.warn("Firebase operating in resilient offline/local mode", err);
+    }
+  },
+
+  async logEvent(collectionName, data) {
+    if (this.db) {
+      try {
+        await this.db.collection(collectionName).add({
+          ...data,
+          clientTimestamp: new Date().toISOString()
+        });
+      } catch (e) {
+        // Fallback silently to maintain 100% offline uptime
+      }
+    }
+  }
+};
+
+// ==========================================================================
+// 2. Theme Manager
 // ==========================================================================
 const ThemeManager = {
   init() {
@@ -36,17 +78,28 @@ const ThemeManager = {
     const icon = document.getElementById('theme-icon');
     if (icon) {
       icon.innerHTML = theme === 'dark' 
-        ? `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>`
+        ? `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>`
         : `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>`;
     }
   }
 };
 
 // ==========================================================================
-// 2. Toast Notification Manager
+// 3. Toast Notification Manager (Throttled & Anti-Spam)
 // ==========================================================================
 const Toast = {
-  show(message, type = 'info', duration = 4000) {
+  lastMessage: '',
+  lastTime: 0,
+
+  show(message, type = 'info', duration = 3500) {
+    const now = Date.now();
+    // Anti-spam deduplication within 2.5 seconds
+    if (this.lastMessage === message && (now - this.lastTime) < 2500) {
+      return;
+    }
+    this.lastMessage = message;
+    this.lastTime = now;
+
     const container = document.getElementById('toast-container');
     if (!container) return;
 
@@ -77,7 +130,7 @@ const Toast = {
 };
 
 // ==========================================================================
-// 3. Client SPA Router (Hash Navigation for Distinct Endpoints)
+// 4. Client SPA Router (Hash Navigation with Screen Transitions)
 // ==========================================================================
 const AppRouter = {
   routes: {
@@ -86,7 +139,8 @@ const AppRouter = {
     '/scrutiny': 'view-scrutiny',
     '/audit-ledger': 'view-audit-ledger',
     '/sla-analytics': 'view-sla-analytics',
-    '/public-verify': 'view-public-verify'
+    '/public-verify': 'view-public-verify',
+    '/login': 'view-login'
   },
 
   init() {
@@ -97,29 +151,28 @@ const AppRouter = {
 
   handleRoute() {
     let hash = window.location.hash.replace('#', '') || '/';
-    // Normalize path
     if (!hash.startsWith('/')) hash = '/' + hash;
 
     const targetViewId = this.routes[hash] || 'view-home';
 
-    // Hide all views
+    // Hide all views with clean exit
     document.querySelectorAll('.page-view').forEach(view => {
       view.classList.remove('active');
     });
 
-    // Show target view
+    // Reveal target view with smooth slide/fade transition
     const targetView = document.getElementById(targetViewId);
     if (targetView) {
       targetView.classList.add('active');
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // Update active nav links
+    // Synchronize active nav links
     document.querySelectorAll('.nav-links .nav-link').forEach(link => {
       link.classList.toggle('active', link.getAttribute('data-route') === hash);
     });
 
-    // Check role warnings if applicable
+    // Check role guidance
     this.checkRoutePermission(hash);
   },
 
@@ -139,7 +192,7 @@ const AppRouter = {
     if (!user) return;
 
     if (route === '/scrutiny' && user.role === 'INSTITUTION') {
-      Toast.show(`Viewing Scrutiny Desk as Institution Head (${user.name}). Switch to Council Officer role to take administrative actions.`, 'info', 5000);
+      Toast.show(`Viewing Scrutiny Desk as Institution Head (${user.name}). Switch to Council Officer role for decision actions.`, 'info', 4500);
     } else if (route === '/institution' && user.role === 'COUNCIL_OFFICER') {
       Toast.show(`Viewing Institution Desk as AICTE Regional Officer (${user.name}).`, 'info', 4000);
     }
@@ -147,10 +200,11 @@ const AppRouter = {
 };
 
 // ==========================================================================
-// 4. Role-Based Authentication & Session Manager (Client-Side Persistent)
+// 5. Role-Based Authentication & Session Manager (Persistent State)
 // ==========================================================================
 const AuthManager = {
   STORAGE_KEY: 'soul_netra_user',
+  STATE_KEY: 'soul_netra_saved_state',
 
   defaultUsers: {
     INSTITUTION: {
@@ -159,7 +213,8 @@ const AuthManager = {
       roleTitle: 'College Principal',
       org: 'COEP Technological University, Pune',
       email: 'principal@coep.ac.in',
-      avatar: 'SD'
+      avatar: 'SD',
+      defaultPortal: '#/institution'
     },
     COUNCIL_OFFICER: {
       role: 'COUNCIL_OFFICER',
@@ -167,7 +222,8 @@ const AuthManager = {
       roleTitle: 'Regional Officer (WRO)',
       org: 'AICTE Western Regional Office, Mumbai',
       email: 'ro.mumbai@aicte-india.org',
-      avatar: 'RJ'
+      avatar: 'RJ',
+      defaultPortal: '#/scrutiny'
     },
     AUDITOR: {
       role: 'AUDITOR',
@@ -175,20 +231,32 @@ const AuthManager = {
       roleTitle: 'CAG Senior Auditor',
       org: 'Comptroller & Auditor General of India',
       email: 'auditor.cag@gov.in',
-      avatar: 'KN'
+      avatar: 'KN',
+      defaultPortal: '#/audit-ledger'
+    },
+    SLA_OFFICER: {
+      role: 'SLA_OFFICER',
+      name: 'Prof. M. K. Verma',
+      roleTitle: 'Council SLA Officer',
+      org: 'AICTE Apex Council / Parshvanath Cell',
+      email: 'sla.compliance@aicte-india.org',
+      avatar: 'MV',
+      defaultPortal: '#/sla-analytics'
     },
     PUBLIC: {
       role: 'PUBLIC',
       name: 'Public Citizen / Student',
       roleTitle: 'Guest Citizen',
-      org: 'General Public Desk',
+      org: 'National Public Transparency Desk',
       email: 'citizen@public.nic.in',
-      avatar: 'PC'
+      avatar: 'PC',
+      defaultPortal: '#/public-verify'
     }
   },
 
   init() {
     this.renderSessionWidget();
+    this.bindLoginScreenEvents();
     this.bindModalEvents();
   },
 
@@ -201,24 +269,40 @@ const AuthManager = {
         // fallback
       }
     }
-    // Default to Institution Principal for instant rich demonstration
+    // Default to Institution Principal for active rich demonstration
     const def = this.defaultUsers.INSTITUTION;
     localStorage.setItem(this.STORAGE_KEY, JSON.stringify(def));
     return def;
   },
 
-  setCurrentUser(user) {
+  setCurrentUser(user, targetPortal) {
     localStorage.setItem(this.STORAGE_KEY, JSON.stringify(user));
     this.renderSessionWidget();
-    Toast.show(`Authenticated as ${user.name} [${user.roleTitle}]`, 'success', 4000);
+
+    // Log to Firebase Cloud Firestore
+    FirebaseSync.logEvent('auth_sessions', {
+      user: user.name,
+      role: user.role,
+      email: user.email,
+      org: user.org
+    });
+
+    Toast.show(`Welcome, ${user.name}! Logged in as ${user.roleTitle}.`, 'success', 4000);
+
+    // Smoothly animate and move to target portal
+    const destination = targetPortal || user.defaultPortal || '#/';
+    window.location.hash = destination;
   },
 
   logout() {
-    const publicUser = this.defaultUsers.PUBLIC;
-    localStorage.setItem(this.STORAGE_KEY, JSON.stringify(publicUser));
+    // Clear active session
+    localStorage.removeItem(this.STORAGE_KEY);
     this.renderSessionWidget();
-    Toast.show('Logged out. Switched to Public Citizen view.', 'info');
-    window.location.hash = '#/public-verify';
+
+    Toast.show('Logged out successfully. Returned to Login Screen.', 'info', 3000);
+
+    // Smooth transition back to login screen
+    window.location.hash = '#/login';
   },
 
   renderSessionWidget() {
@@ -227,188 +311,135 @@ const AuthManager = {
 
     const user = this.getCurrentUser();
 
-    widget.innerHTML = `
-      <button class="user-chip-btn" id="btn-user-chip" title="Click to Switch Role or Sign Out">
-        <div class="user-avatar-circle">${user.avatar || 'U'}</div>
-        <span>${user.name.split(' ')[0]}</span>
-        <span class="sih-badge" style="font-size: 0.65rem; padding: 1px 6px;">${user.role.substring(0, 4)}</span>
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-      </button>
-
-      <div class="user-dropdown-menu" id="user-dropdown-menu">
-        <div class="dropdown-user-header">
-          <div class="dropdown-user-name">${user.name}</div>
-          <div class="dropdown-user-role">${user.roleTitle}</div>
-          <div class="dropdown-user-email">${user.email}</div>
-        </div>
-
-        <div class="dropdown-actions">
-          <button class="dropdown-btn" id="btn-switch-to-inst">
-            <span>🎓 Switch to College Principal</span>
+    if (user && user.role !== 'LOGGED_OUT') {
+      widget.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 0.45rem;">
+          <button class="user-chip-btn" id="btn-user-chip" title="Active: ${user.name} (${user.roleTitle})">
+            <div class="user-avatar-circle">${user.avatar || 'U'}</div>
+            <span>${user.name.split(' ')[0]}</span>
+            <span class="sih-badge" style="font-size: 0.65rem; padding: 1px 6px;">${user.role.substring(0, 4)}</span>
           </button>
-          <button class="dropdown-btn" id="btn-switch-to-officer">
-            <span>🏛️ Switch to AICTE Officer</span>
-          </button>
-          <button class="dropdown-btn" id="btn-switch-to-auditor">
-            <span>🛡️ Switch to CAG Auditor</span>
-          </button>
-          <button class="dropdown-btn" id="btn-switch-to-public">
-            <span>👥 Switch to Public Student</span>
-          </button>
-          <button class="dropdown-btn" id="btn-open-login-modal">
-            <span>🔑 Sign In with Credentials...</span>
-          </button>
-          <button class="dropdown-btn danger" id="btn-logout">
-            <span>🚪 Sign Out</span>
+          <button class="btn btn-outline btn-sm" id="btn-logout-nav" title="Sign Out and Return to Login Screen" style="padding: 0.35rem 0.75rem; font-size: 0.78rem;">
+            <span>Sign Out</span>
           </button>
         </div>
-      </div>
-    `;
+      `;
 
-    // Dropdown toggling
-    const chipBtn = document.getElementById('btn-user-chip');
-    const dropdown = document.getElementById('user-dropdown-menu');
-
-    chipBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      dropdown.classList.toggle('show');
-    });
-
-    document.addEventListener('click', (e) => {
-      if (!widget.contains(e.target)) {
-        dropdown.classList.remove('show');
-      }
-    });
-
-    // Dropdown role actions
-    document.getElementById('btn-switch-to-inst')?.addEventListener('click', () => {
-      this.setCurrentUser(this.defaultUsers.INSTITUTION);
-      dropdown.classList.remove('show');
-      window.location.hash = '#/institution';
-    });
-
-    document.getElementById('btn-switch-to-officer')?.addEventListener('click', () => {
-      this.setCurrentUser(this.defaultUsers.COUNCIL_OFFICER);
-      dropdown.classList.remove('show');
-      window.location.hash = '#/scrutiny';
-    });
-
-    document.getElementById('btn-switch-to-auditor')?.addEventListener('click', () => {
-      this.setCurrentUser(this.defaultUsers.AUDITOR);
-      dropdown.classList.remove('show');
-      window.location.hash = '#/audit-ledger';
-    });
-
-    document.getElementById('btn-switch-to-public')?.addEventListener('click', () => {
-      this.setCurrentUser(this.defaultUsers.PUBLIC);
-      dropdown.classList.remove('show');
-      window.location.hash = '#/public-verify';
-    });
-
-    document.getElementById('btn-open-login-modal')?.addEventListener('click', () => {
-      dropdown.classList.remove('show');
-      this.openLoginModal();
-    });
-
-    document.getElementById('btn-logout')?.addEventListener('click', () => {
-      dropdown.classList.remove('show');
-      this.logout();
-    });
-  },
-
-  openLoginModal() {
-    const modal = document.getElementById('login-modal-overlay');
-    if (modal) modal.classList.add('show');
-  },
-
-  closeLoginModal() {
-    const modal = document.getElementById('login-modal-overlay');
-    if (modal) modal.classList.remove('show');
-  },
-
-  bindModalEvents() {
-    const closeBtn = document.getElementById('login-close-btn');
-    if (closeBtn) {
-      closeBtn.addEventListener('click', () => this.closeLoginModal());
-    }
-
-    const overlay = document.getElementById('login-modal-overlay');
-    if (overlay) {
-      overlay.addEventListener('click', (e) => {
-        if (e.target === overlay) this.closeLoginModal();
-      });
-    }
-
-    // Tab buttons
-    const tabQuick = document.getElementById('tab-btn-quick');
-    const tabCustom = document.getElementById('tab-btn-custom');
-    const contentQuick = document.getElementById('auth-content-quick');
-    const contentCustom = document.getElementById('auth-content-custom');
-
-    if (tabQuick && tabCustom) {
-      tabQuick.addEventListener('click', () => {
-        tabQuick.classList.add('active');
-        tabCustom.classList.remove('active');
-        contentQuick.classList.add('active');
-        contentCustom.classList.remove('active');
+      // Logout button click
+      document.getElementById('btn-logout-nav')?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.logout();
       });
 
-      tabCustom.addEventListener('click', () => {
-        tabCustom.classList.add('active');
-        tabQuick.classList.remove('active');
-        contentCustom.classList.add('active');
-        contentQuick.classList.remove('active');
+      // User chip click navigates to their own portal
+      document.getElementById('btn-user-chip')?.addEventListener('click', () => {
+        if (user.defaultPortal) window.location.hash = user.defaultPortal;
       });
+    } else {
+      widget.innerHTML = `
+        <a href="#/login" class="btn btn-primary btn-glow btn-sm">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <span>Sign In / Role</span>
+        </a>
+      `;
     }
+  },
 
-    // 1-Click Role selection items
-    document.querySelectorAll('.quick-role-item').forEach(item => {
-      item.addEventListener('click', () => {
-        const role = item.getAttribute('data-role');
+  bindLoginScreenEvents() {
+    // 1-Click Persona Login buttons on #view-login
+    document.querySelectorAll('.btn-persona-login').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const role = btn.getAttribute('data-role');
         const user = this.defaultUsers[role];
         if (user) {
-          this.setCurrentUser(user);
-          this.closeLoginModal();
-          if (role === 'INSTITUTION') window.location.hash = '#/institution';
-          else if (role === 'COUNCIL_OFFICER') window.location.hash = '#/scrutiny';
-          else if (role === 'AUDITOR') window.location.hash = '#/audit-ledger';
-          else window.location.hash = '#/public-verify';
+          this.setCurrentUser(user, user.defaultPortal);
         }
       });
     });
 
-    // Custom login form submit
-    const customForm = document.getElementById('form-custom-login');
-    if (customForm) {
-      customForm.addEventListener('submit', (e) => {
+    // Custom login form on #view-login
+    const screenForm = document.getElementById('form-screen-login');
+    if (screenForm) {
+      screenForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        const email = document.getElementById('login-email').value;
-        const role = document.getElementById('login-role-select').value;
+        const email = document.getElementById('screen-login-email').value;
+        const role = document.getElementById('screen-login-role').value;
         const namePart = email.split('@')[0].replace('.', ' ');
         const capName = namePart.charAt(0).toUpperCase() + namePart.slice(1);
 
         const customUser = {
           role: role,
           name: capName,
-          roleTitle: role === 'INSTITUTION' ? 'Institution Applicant' : role === 'COUNCIL_OFFICER' ? 'AICTE Officer' : 'Vigilance Auditor',
+          roleTitle: role === 'INSTITUTION' ? 'College Principal' : role === 'COUNCIL_OFFICER' ? 'AICTE Officer' : role === 'AUDITOR' ? 'CAG Auditor' : 'SLA Officer',
           org: 'Government Tech Institution',
           email: email,
-          avatar: capName.substring(0, 2).toUpperCase()
+          avatar: capName.substring(0, 2).toUpperCase(),
+          defaultPortal: role === 'INSTITUTION' ? '#/institution' : role === 'COUNCIL_OFFICER' ? '#/scrutiny' : role === 'AUDITOR' ? '#/audit-ledger' : '#/sla-analytics'
         };
 
-        this.setCurrentUser(customUser);
-        this.closeLoginModal();
+        this.setCurrentUser(customUser, customUser.defaultPortal);
       });
     }
+  },
+
+  bindModalEvents() {
+    const closeBtn = document.getElementById('login-close-btn');
+    const overlay = document.getElementById('login-modal-overlay');
+
+    if (closeBtn && overlay) {
+      closeBtn.addEventListener('click', () => overlay.classList.remove('show'));
+      overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) overlay.classList.remove('show');
+      });
+    }
+
+    // Modal quick role selectors
+    document.querySelectorAll('.quick-role-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const role = item.getAttribute('data-role');
+        const user = this.defaultUsers[role];
+        if (user) {
+          if (overlay) overlay.classList.remove('show');
+          this.setCurrentUser(user, user.defaultPortal);
+        }
+      });
+    });
   }
 };
 
 // ==========================================================================
-// 5. Institution Portal Manager (#/institution)
+// 6. Institution Portal Manager (#/institution)
 // ==========================================================================
 const InstitutionPortal = {
   init() {
+    this.restoreState();
     this.bindEvents();
+  },
+
+  restoreState() {
+    const saved = localStorage.getItem('soul_netra_inst_state');
+    if (saved) {
+      try {
+        const data = JSON.parse(saved);
+        if (data.status === 'UNDER_COUNCIL_REVIEW') {
+          const bannerTitle = document.getElementById('inst-banner-title');
+          const bannerSub = document.getElementById('inst-banner-sub');
+          const statusBadge = document.getElementById('inst-docket-status');
+
+          if (bannerTitle) {
+            bannerTitle.textContent = 'Institutional Response Filed • Council Review Clock ACTIVE';
+            bannerTitle.style.color = '#38bdf8';
+          }
+          if (bannerSub) {
+            bannerSub.textContent = 'Compliance response received and logged to SHA-256 rolling chain. Council review latency clock is now accountable.';
+          }
+          if (statusBadge) {
+            statusBadge.textContent = 'UNDER_COUNCIL_REVIEW';
+            statusBadge.className = 'stage-badge status-info';
+          }
+        }
+      } catch (e) {}
+    }
   },
 
   bindEvents() {
@@ -418,7 +449,7 @@ const InstitutionPortal = {
       btnRefresh.addEventListener('click', () => {
         Toast.show('Syncing Application Docket AICTE-2026-ENG-4921 with Central Ledger...', 'info');
         setTimeout(() => {
-          Toast.show('Docket state verified. No external discrepancies detected.', 'success');
+          Toast.show('Docket state verified against SHA-256 chain. 0 discrepancies.', 'success');
         }, 800);
       });
     }
@@ -463,7 +494,22 @@ const InstitutionPortal = {
         // 2. Transfer Clock Custody to Council
         SplitClock.setOwner('ADMIN');
 
-        // 3. Append block to cryptographic ledger
+        // 3. Save state in localStorage so logging out remembers!
+        localStorage.setItem('soul_netra_inst_state', JSON.stringify({
+          status: 'UNDER_COUNCIL_REVIEW',
+          remarks: remarks,
+          timestamp: new Date().toISOString()
+        }));
+
+        // 4. Log to Firebase Firestore
+        FirebaseSync.logEvent('compliance_filings', {
+          app_id: "AICTE-2026-ENG-4921",
+          clause: "Clause 2.14 Cadre Ratio",
+          resolution_ref: "COEP/BOG/2026/RES-419",
+          remarks: remarks
+        });
+
+        // 5. Append block to cryptographic ledger
         if (LedgerSimulator.blocks) {
           const prevHash = LedgerSimulator.blocks[LedgerSimulator.blocks.length - 1].hash;
           const payload = {
@@ -530,6 +576,14 @@ const InstitutionPortal = {
           tbody.prepend(tr);
         }
 
+        // Log to Firebase Firestore
+        FirebaseSync.logEvent('uploaded_documents', {
+          category: category,
+          authority: authority,
+          expiry: expiry,
+          institution: "COEP Technological University"
+        });
+
         if (uploadOverlay) uploadOverlay.classList.remove('show');
         Toast.show(`Statutory Document [${category}] Ingested & Hashed under Rule 70(5). AI Pre-Check Cleared!`, 'success', 5000);
       });
@@ -545,7 +599,7 @@ const InstitutionPortal = {
 };
 
 // ==========================================================================
-// 6. Scrutiny Desk Manager (#/scrutiny)
+// 7. Scrutiny Desk Manager (#/scrutiny)
 // ==========================================================================
 const ScrutinyDesk = {
   apps: {
@@ -656,6 +710,14 @@ const ScrutinyDesk = {
           LedgerSimulator.render();
         }
 
+        // 3. Log to Firebase Firestore
+        FirebaseSync.logEvent('deficiency_notices', {
+          app_id: "AICTE-2026-ENG-4921",
+          clause_cited: clause,
+          officer: "RO-WRO-402",
+          remarks: remarks
+        });
+
         if (defOverlay) defOverlay.classList.remove('show');
         Toast.show(`Statutory Deficiency Issued citing ${clause}. Council Clock Stopped; College Clock Activated!`, 'error', 6000);
       });
@@ -680,7 +742,7 @@ const ScrutinyDesk = {
 };
 
 // ==========================================================================
-// 7. Public Institutional Verification & Transparency Desk (#/public-verify)
+// 8. Public Institutional Verification & Transparency Desk (#/public-verify)
 // ==========================================================================
 const PublicVerifyModule = {
   colleges: [
@@ -859,13 +921,13 @@ const PublicVerifyModule = {
 };
 
 // ==========================================================================
-// 8. Live Dual-Accumulator Split-Clock Engine
+// 9. Live Dual-Accumulator Split-Clock Engine
 // ==========================================================================
 const SplitClock = {
   instMs: 142000,
   adminMs: 86400,
   pausedMs: 0,
-  activeOwner: 'ADMIN', // 'INSTITUTION' | 'ADMIN' | 'PAUSED'
+  activeOwner: 'ADMIN',
   intervalId: null,
 
   init() {
@@ -962,7 +1024,7 @@ const SplitClock = {
 };
 
 // ==========================================================================
-// 9. Cryptographic SHA-256 Rolling Hash Chain Ledger
+// 10. Cryptographic SHA-256 Rolling Hash Chain Ledger
 // ==========================================================================
 const LedgerSimulator = {
   blocks: [],
@@ -1039,12 +1101,11 @@ const LedgerSimulator = {
 
     if (btnTamper) {
       btnTamper.addEventListener('click', async () => {
-        // Mutate block 1 payload illicitly without updating hash chain
         if (this.blocks.length > 1) {
-          this.blocks[1].payload.intake = 9999; // Corrupted unauthorized edit
+          this.blocks[1].payload.intake = 9999;
           this.blocks[1].isCorrupted = true;
           this.render();
-          Toast.show('Simulated Tamper Attack: Block #1 payload illicitly modified in memory (intake changed from 600 to 9999). Run chain verification to test forensic detection!', 'error', 6000);
+          Toast.show('Simulated Tamper Attack: Block #1 payload modified illicitly. Run chain verification to test forensic detection!', 'error', 6000);
         }
       });
     }
@@ -1091,7 +1152,7 @@ const LedgerSimulator = {
 };
 
 // ==========================================================================
-// 10. Working-Day Statutory Deadline Calculator
+// 11. Working-Day Statutory Deadline Calculator
 // ==========================================================================
 const DeadlineCalculator = {
   gazettedHolidays: [
@@ -1124,13 +1185,11 @@ const DeadlineCalculator = {
       const dayOfWeek = curDate.getDay();
       const iso = curDate.toISOString().split('T')[0];
 
-      // Exclude weekends (Saturday = 6, Sunday = 0)
       if (dayOfWeek === 0 || dayOfWeek === 6) {
         trail.push(`${iso} (Weekend Excluded)`);
         continue;
       }
 
-      // Exclude gazetted holidays
       if (this.gazettedHolidays.includes(iso)) {
         trail.push(`${iso} (Gazetted Holiday Excluded)`);
         continue;
@@ -1159,7 +1218,7 @@ const DeadlineCalculator = {
 };
 
 // ==========================================================================
-// 11. Secure View-Only Copyright Dossier Viewer
+// 12. Secure View-Only Copyright Dossier Viewer
 // ==========================================================================
 const ReportViewer = {
   init() {
@@ -1172,7 +1231,6 @@ const ReportViewer = {
       overlay.classList.add('show');
       document.body.style.overflow = 'hidden';
 
-      // Load PDF in iframe
       const iframe = document.getElementById('report-iframe');
       if (iframe && !iframe.src.includes('docs/')) {
         iframe.src = 'docs/SOUL_NETRA_Copyright_Report.pdf#toolbar=0&navpanes=0&scrollbar=1';
@@ -1212,7 +1270,7 @@ const ReportViewer = {
 
     container.innerHTML = '';
     const now = new Date().toLocaleDateString('en-IN');
-    const user = AuthManager.getCurrentUser();
+    const user = AuthManager.getCurrentUser() || { name: 'Public Guest' };
     const watermarkText = `CONFIDENTIAL • SOUL NETRA • SIH26262 • VIEW ONLY • ${user.name} • ${now}`;
 
     for (let i = 0; i < 48; i++) {
@@ -1249,7 +1307,7 @@ const ReportViewer = {
 };
 
 // ==========================================================================
-// 12. Floating Particle System
+// 13. Floating Particle System
 // ==========================================================================
 const ParticleSystem = {
   particles: [],
@@ -1327,7 +1385,7 @@ const ParticleSystem = {
 };
 
 // ==========================================================================
-// 13. Mobile Navigation
+// 14. Mobile Navigation
 // ==========================================================================
 const MobileNav = {
   init() {
@@ -1337,7 +1395,6 @@ const MobileNav = {
     
     if (!hamburger || !overlay) return;
 
-    // Populate mobile overlay with distinct endpoint links
     const links = [...navLinks].map(l => 
       `<a href="${l.getAttribute('href')}">${l.textContent}</a>`
     ).join('');
@@ -1360,7 +1417,7 @@ const MobileNav = {
 };
 
 // ==========================================================================
-// 14. Animated Stat Counters
+// 15. Animated Stat Counters
 // ==========================================================================
 const CounterAnimation = {
   init() {
@@ -1406,6 +1463,7 @@ const CounterAnimation = {
 // Bootstrap Engine on DOMContentLoaded
 // ==========================================================================
 document.addEventListener('DOMContentLoaded', () => {
+  FirebaseSync.init();
   ThemeManager.init();
   AuthManager.init();
   AppRouter.init();

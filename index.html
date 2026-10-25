@@ -40,6 +40,7 @@
       <li><a href="#/audit-ledger" class="nav-link" data-route="/audit-ledger">Audit Ledger</a></li>
       <li><a href="#/sla-analytics" class="nav-link" data-route="/sla-analytics">SLA Analytics</a></li>
       <li><a href="#/public-verify" class="nav-link" data-route="/public-verify">Public Verify</a></li>
+      <li><a href="#/login" class="nav-link" data-route="/login">Login</a></li>
     </ul>
 
     <div class="nav-actions">
@@ -877,6 +878,182 @@
       </div>
     </div>
 
+    <!-- =======================================================================
+         ENDPOINT 7: DEDICATED LOGIN & SAMPLE PERSONAS GATEWAY (#/login)
+         ======================================================================= -->
+    <div class="page-view" id="view-login">
+      <div class="login-screen-wrap">
+        <div class="login-screen-hero">
+          <div class="login-hero-pill">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 14 14"/></svg>
+            Problem Statement SIH26262 &bull; Smart Automation &bull; Ministry of Education / AICTE
+          </div>
+          <h1 class="login-screen-title">
+            <span class="gradient-text">SOUL NETRA</span> Single Sign-On Gateway
+          </h1>
+          <p class="login-screen-sub">
+            System for Oversight, Unified Lifecycle &mdash; Network for Evaluation, Tracking, Reporting &amp; Accountability.
+            Select a verified regulatory persona below to directly enter their dedicated workspace, or sign in with custom credentials.
+          </p>
+        </div>
+
+        <!-- 5 Sample Logins / Persona Cards -->
+        <div class="section-header" style="text-align: center; margin-bottom: 1rem;">
+          <span class="section-tag">Sample Logins (Quick 1-Click Access)</span>
+          <h2 class="section-title">Select Regulatory Operational Persona</h2>
+          <p class="section-desc">Each sample login immediately unlocks that role's real workspace, actions, and decision capabilities.</p>
+        </div>
+
+        <div class="login-personas-grid">
+          <!-- Persona 1: College Principal -->
+          <div class="persona-card" data-role="INSTITUTION">
+            <div class="persona-header">
+              <div class="persona-avatar">🎓</div>
+              <div class="persona-meta">
+                <span class="badge badge-inst persona-role-badge">Institutional Applicant</span>
+                <div class="persona-name">Dr. Sunita Deshmukh</div>
+                <div class="persona-org">Principal &bull; COEP Technological University, Pune</div>
+              </div>
+            </div>
+            <p class="persona-desc">
+              Full institutional authority to file extension requests, resolve statutory deficiency notices under countdown clocks, upload 30-year land leases, and monitor continuing compliance.
+            </p>
+            <div class="persona-features">
+              <div>&bull; Docket ID: <strong>AICTE-2026-ENG-4921</strong></div>
+              <div>&bull; Active Deficiency: <strong>Clause 2.14 Cadre Ratio</strong></div>
+              <div>&bull; 2-Phase Document Vault Access</div>
+            </div>
+            <button class="btn btn-primary btn-glow persona-action-btn btn-persona-login" data-role="INSTITUTION">
+              <span>Launch Institution Portal &rarr;</span>
+            </button>
+          </div>
+
+          <!-- Persona 2: AICTE Scrutiny Officer -->
+          <div class="persona-card" data-role="COUNCIL_OFFICER">
+            <div class="persona-header">
+              <div class="persona-avatar">🏛️</div>
+              <div class="persona-meta">
+                <span class="badge badge-council persona-role-badge">AICTE Council Officer</span>
+                <div class="persona-name">Dr. Ramesh Joshi</div>
+                <div class="persona-org">Regional Officer &bull; AICTE WRO Mumbai</div>
+              </div>
+            </div>
+            <p class="persona-desc">
+              Council administrative desk to review regional application dockets, check municipal built-up areas and fire NOCs, issue statutory deficiency notices, and schedule EVC inspections.
+            </p>
+            <div class="persona-features">
+              <div>&bull; Active Regional Queue: <strong>18 Applications</strong></div>
+              <div>&bull; Issue Deficiency (Pauses Council Clock)</div>
+              <div>&bull; Supreme Court Parshvanath Timetable</div>
+            </div>
+            <button class="btn btn-primary btn-glow persona-action-btn btn-persona-login" data-role="COUNCIL_OFFICER">
+              <span>Open Scrutiny Desk &rarr;</span>
+            </button>
+          </div>
+
+          <!-- Persona 3: CAG Senior Auditor -->
+          <div class="persona-card" data-role="AUDITOR">
+            <div class="persona-header">
+              <div class="persona-avatar">🛡️</div>
+              <div class="persona-meta">
+                <span class="badge badge-audit persona-role-badge">Vigilance &amp; Audit</span>
+                <div class="persona-name">K. S. Narayanan</div>
+                <div class="persona-org">Senior Auditor &bull; CAG / CVC New Delhi</div>
+              </div>
+            </div>
+            <p class="persona-desc">
+              Deep forensic audit authority to inspect the immutable SHA-256 rolling ledger, simulate malicious tamper attacks to test non-repudiation, and export statutory audit certificates.
+            </p>
+            <div class="persona-features">
+              <div>&bull; Append-Only SHA-256 Rolling Hash Chain</div>
+              <div>&bull; Linear O(N) Tamper Mutation Verifier</div>
+              <div>&bull; CAG Report 28/2017 &amp; 23/2021 Compliance</div>
+            </div>
+            <button class="btn btn-primary btn-glow persona-action-btn btn-persona-login" data-role="AUDITOR">
+              <span>Inspect Cryptographic Ledger &rarr;</span>
+            </button>
+          </div>
+
+          <!-- Persona 4: Council SLA & Timelines Officer -->
+          <div class="persona-card" data-role="SLA_OFFICER">
+            <div class="persona-header">
+              <div class="persona-avatar">⏱️</div>
+              <div class="persona-meta">
+                <span class="badge badge-sla persona-role-badge">SLA &amp; Timelines Bureau</span>
+                <div class="persona-name">Prof. M. K. Verma</div>
+                <div class="persona-org">Apex Compliance Cell &bull; AICTE New Delhi</div>
+              </div>
+            </div>
+            <p class="persona-desc">
+              Real-time dual-accumulator delay attribution engine ($T_{\text{inst}}$ vs. $T_{\text{admin}}$), working-day statutory deadline computation with gazetted holiday deduplication.
+            </p>
+            <div class="persona-features">
+              <div>&bull; Millisecond Split-Clock Accrual</div>
+              <div>&bull; Gazetted Public Holiday Deduplication</div>
+              <div>&bull; Supreme Court Parshvanath Cutoff Radar</div>
+            </div>
+            <button class="btn btn-primary btn-glow persona-action-btn btn-persona-login" data-role="SLA_OFFICER">
+              <span>Open SLA Analytics &rarr;</span>
+            </button>
+          </div>
+
+          <!-- Persona 5: Public Student / Citizen -->
+          <div class="persona-card" data-role="PUBLIC">
+            <div class="persona-header">
+              <div class="persona-avatar">👥</div>
+              <div class="persona-meta">
+                <span class="badge badge-public persona-role-badge">Public Transparency</span>
+                <div class="persona-name">Public Student / Parent</div>
+                <div class="persona-org">Open Transparency Desk &bull; National Portal</div>
+              </div>
+            </div>
+            <p class="persona-desc">
+              Open public access to verify authentic AICTE Extension of Approval (EOA) letters, approved seat intake, and building clearances without exposing proprietary source code.
+            </p>
+            <div class="persona-features">
+              <div>&bull; Permanent Institute ID (PID) Search</div>
+              <div>&bull; Sanctioned Course Intake Capacity</div>
+              <div>&bull; Zero Source-Code Leaks &bull; 100% Safe</div>
+            </div>
+            <button class="btn btn-outline persona-action-btn btn-persona-login" data-role="PUBLIC">
+              <span>Access Public Verification &rarr;</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Custom Credentials Form Box -->
+        <div class="card" style="margin-top: 2rem; max-width: 580px; margin-left: auto; margin-right: auto;">
+          <div class="card-header">
+            <div class="card-title">Custom Official Credentials Sign In</div>
+            <span class="sih-badge">Manual SSO</span>
+          </div>
+          <form id="form-screen-login" style="margin-top: 1rem;">
+            <div class="form-group" style="margin-bottom: 1rem;">
+              <label class="form-label">Official Government / Institutional Email</label>
+              <input type="email" id="screen-login-email" class="form-input" placeholder="e.g. principal@coep.ac.in" required value="principal@coep.ac.in">
+            </div>
+            <div class="form-group" style="margin-bottom: 1rem;">
+              <label class="form-label">Password / Digital Token</label>
+              <input type="password" id="screen-login-password" class="form-input" placeholder="••••••••" required value="demo2026">
+            </div>
+            <div class="form-group" style="margin-bottom: 1.25rem;">
+              <label class="form-label">Designated Regulatory Role</label>
+              <select id="screen-login-role" class="form-select">
+                <option value="INSTITUTION">Technical Institution Applicant (COEP Tech)</option>
+                <option value="COUNCIL_OFFICER">AICTE Regional Officer (WRO Mumbai)</option>
+                <option value="AUDITOR">CAG / Central Vigilance Auditor</option>
+                <option value="SLA_OFFICER">AICTE Council SLA &amp; Timelines Bureau</option>
+                <option value="PUBLIC">Public Citizen / Student Guest</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary btn-glow btn-full">
+              <span>Authenticate Session &amp; Launch Portal &rarr;</span>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
   </main>
 
   <!-- =========================================================================
@@ -1165,6 +1342,9 @@
     </div>
   </footer>
 
+  <!-- Firebase App & Firestore SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
