@@ -23,7 +23,9 @@ docs/
 **/docs/
 vue_scaffold/public/docs/
 vue_scaffold/dist/docs/
+vue_scaffold/public/viewer/
 Final_Project_Report/
+
 
 # Node / Editor / Firebase Cache
 node_modules/

@@ -26,5 +26,7 @@ dist-ssr
 # Confidential Reports & PDFs
 *.pdf
 public/docs/
+public/viewer/
 docs/
+
 
