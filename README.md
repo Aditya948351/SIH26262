@@ -2,8 +2,6 @@
   <img src="logo.png" alt="SOUL NETRA Logo" width="240" />
 </p>
 
-<h1 align="center">SOUL NETRA</h1>
-
 <p align="center">
   <strong>S</strong>ystem for <strong>O</strong>versight, <strong>U</strong>nified <strong>L</strong>ifecycle &mdash; <strong>N</strong>etwork for <strong>E</strong>valuation, <strong>T</strong>racking, <strong>R</strong>eporting &amp; <strong>A</strong>ccountability
 </p>
