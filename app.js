@@ -132,9 +132,54 @@ const Toast = {
 // ==========================================================================
 // 4. Client SPA Router (Hash Navigation with Screen Transitions)
 // ==========================================================================
+// ==========================================================================
+// 4. Scroll Reveal & Visual Assurance Engine (Guaranteed Non-Blank)
+// ==========================================================================
+const ScrollReveal = {
+  init() {
+    this.revealAll();
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('revealed');
+          }
+        });
+      }, { threshold: 0.05 });
+
+      document.querySelectorAll('.reveal-section, .reveal-item').forEach(el => {
+        observer.observe(el);
+      });
+    }
+  },
+
+  revealAll() {
+    document.querySelectorAll('.reveal-section, .reveal-item').forEach(el => {
+      el.classList.add('revealed');
+      el.style.opacity = '1';
+      el.style.transform = 'translateY(0)';
+    });
+  },
+
+  revealActiveView(viewId) {
+    const view = document.getElementById(viewId);
+    if (view) {
+      view.querySelectorAll('.reveal-section, .reveal-item').forEach(el => {
+        el.classList.add('revealed');
+        el.style.opacity = '1';
+        el.style.transform = 'translateY(0)';
+      });
+    }
+  }
+};
+
+// ==========================================================================
+// 5. Client SPA Router (Strictly Login-Based with Role Protection)
+// ==========================================================================
 const AppRouter = {
   routes: {
     '/': 'view-home',
+    '/overview': 'view-home',
     '/institution': 'view-institution',
     '/scrutiny': 'view-scrutiny',
     '/audit-ledger': 'view-audit-ledger',
@@ -150,30 +195,62 @@ const AppRouter = {
   },
 
   handleRoute() {
-    let hash = window.location.hash.replace('#', '') || '/';
-    if (!hash.startsWith('/')) hash = '/' + hash;
+    let hash = window.location.hash.replace('#', '').trim();
+    if (!hash.startsWith('/') && hash !== '') hash = '/' + hash;
 
-    const targetViewId = this.routes[hash] || 'view-home';
+    const isAuthed = AuthManager.isAuthenticated();
 
-    // Hide all views with clean exit
+    // 1. STRICT LOGIN-BASED GATING:
+    // If not authenticated, only allow '/login' and '/public-verify'.
+    if (!isAuthed) {
+      if (hash !== '/login' && hash !== '/public-verify') {
+        if (hash !== '' && hash !== '/') {
+          Toast.show('Please select a regulatory persona to enter the portal.', 'info', 4000);
+        }
+        window.location.hash = '#/login';
+        return;
+      }
+    } else {
+      // If authenticated and visiting empty or /login, redirect to their default portal or overview
+      if (hash === '' || hash === '/login') {
+        const user = AuthManager.getCurrentUser();
+        const dest = (user && user.defaultPortal) ? user.defaultPortal : '#/overview';
+        window.location.hash = dest;
+        return;
+      }
+    }
+
+    // Default route mapping
+    let targetRoute = hash || '/login';
+    if (targetRoute === '/overview') targetRoute = '/';
+
+    const targetViewId = this.routes[targetRoute] || 'view-login';
+
+    // Hide all views
     document.querySelectorAll('.page-view').forEach(view => {
       view.classList.remove('active');
     });
 
-    // Reveal target view with smooth slide/fade transition
+    // Reveal target view
     const targetView = document.getElementById(targetViewId);
     if (targetView) {
       targetView.classList.add('active');
       window.scrollTo({ top: 0, behavior: 'smooth' });
+      // Ensure all elements in the view are 100% visible (never blank)
+      ScrollReveal.revealActiveView(targetViewId);
     }
 
     // Synchronize active nav links
     document.querySelectorAll('.nav-links .nav-link').forEach(link => {
-      link.classList.toggle('active', link.getAttribute('data-route') === hash);
+      const linkRoute = link.getAttribute('data-route');
+      link.classList.toggle('active', linkRoute === targetRoute || (linkRoute === '/' && targetRoute === '/overview'));
     });
 
-    // Check role guidance
-    this.checkRoutePermission(hash);
+    // Sync moving documents and lifecycle state
+    DocLifecycle.render();
+
+    // Role check toast
+    this.checkRoutePermission(targetRoute);
   },
 
   bindNavLinks() {
@@ -200,11 +277,10 @@ const AppRouter = {
 };
 
 // ==========================================================================
-// 5. Role-Based Authentication & Session Manager (Persistent State)
+// 6. Role-Based Authentication & Session Manager (Login-Based Engine)
 // ==========================================================================
 const AuthManager = {
   STORAGE_KEY: 'soul_netra_user',
-  STATE_KEY: 'soul_netra_saved_state',
 
   defaultUsers: {
     INSTITUTION: {
@@ -264,15 +340,20 @@ const AuthManager = {
     const raw = localStorage.getItem(this.STORAGE_KEY);
     if (raw) {
       try {
-        return JSON.parse(raw);
+        const parsed = JSON.parse(raw);
+        if (parsed && parsed.role && parsed.role !== 'LOGGED_OUT') {
+          return parsed;
+        }
       } catch (e) {
-        // fallback
+        return null;
       }
     }
-    // Default to Institution Principal for active rich demonstration
-    const def = this.defaultUsers.INSTITUTION;
-    localStorage.setItem(this.STORAGE_KEY, JSON.stringify(def));
-    return def;
+    return null;
+  },
+
+  isAuthenticated() {
+    const u = this.getCurrentUser();
+    return !!(u && u.role && u.role !== 'LOGGED_OUT');
   },
 
   setCurrentUser(user, targetPortal) {
@@ -287,10 +368,10 @@ const AuthManager = {
       org: user.org
     });
 
-    Toast.show(`Welcome, ${user.name}! Logged in as ${user.roleTitle}.`, 'success', 4000);
+    Toast.show(`Authenticated as ${user.name} (${user.roleTitle})`, 'success', 4000);
 
     // Smoothly animate and move to target portal
-    const destination = targetPortal || user.defaultPortal || '#/';
+    const destination = targetPortal || user.defaultPortal || '#/institution';
     window.location.hash = destination;
   },
 
@@ -299,9 +380,9 @@ const AuthManager = {
     localStorage.removeItem(this.STORAGE_KEY);
     this.renderSessionWidget();
 
-    Toast.show('Logged out successfully. Returned to Login Screen.', 'info', 3000);
+    Toast.show('Logged out successfully. All document movements & docket state preserved.', 'info', 3500);
 
-    // Smooth transition back to login screen
+    // Direct transition back to login screen
     window.location.hash = '#/login';
   },
 
@@ -319,7 +400,7 @@ const AuthManager = {
             <span>${user.name.split(' ')[0]}</span>
             <span class="sih-badge" style="font-size: 0.65rem; padding: 1px 6px;">${user.role.substring(0, 4)}</span>
           </button>
-          <button class="btn btn-outline btn-sm" id="btn-logout-nav" title="Sign Out and Return to Login Screen" style="padding: 0.35rem 0.75rem; font-size: 0.78rem;">
+          <button class="btn btn-outline btn-sm" id="btn-logout-nav" title="Sign Out and Return to Login Screen" style="padding: 0.35rem 0.75rem; font-size: 0.78rem; border-color: rgba(239, 68, 68, 0.4); color: #f87171;">
             <span>Sign Out</span>
           </button>
         </div>
@@ -337,9 +418,9 @@ const AuthManager = {
       });
     } else {
       widget.innerHTML = `
-        <a href="#/login" class="btn btn-primary btn-glow btn-sm">
+        <a href="#/login" class="btn btn-primary btn-glow btn-sm" id="btn-open-login">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-          <span>Sign In / Role</span>
+          <span>Sign In / Select Persona</span>
         </a>
       `;
     }
@@ -348,7 +429,8 @@ const AuthManager = {
   bindLoginScreenEvents() {
     // 1-Click Persona Login buttons on #view-login
     document.querySelectorAll('.btn-persona-login').forEach(btn => {
-      btn.addEventListener('click', () => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
         const role = btn.getAttribute('data-role');
         const user = this.defaultUsers[role];
         if (user) {
@@ -408,49 +490,503 @@ const AuthManager = {
 };
 
 // ==========================================================================
-// 6. Institution Portal Manager (#/institution)
+// 7. Dynamic Moving Documents & Application Lifecycle Engine (DocLifecycle)
+// ==========================================================================
+const DocLifecycle = {
+  STATE_KEY: 'soul_netra_lifecycle_state',
+
+  getDefaultState() {
+    return {
+      activeStep: 3, // Step 3: Scrutiny Verification
+      docketStatus: 'DEFICIENCY_PENDING',
+      clockOwner: 'COLLEGE',
+      collegeClockDays: 8,
+      councilClockDays: 4,
+      documents: [
+        {
+          id: 'doc-land',
+          name: '30-Year Registered Land Lease Deed',
+          authority: 'Sub-Registrar / Revenue Dept',
+          timestamp: '2026-10-12 11:24',
+          hash: '7a9f8b2c4d1e3f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a',
+          aiStatus: '100% Match (4.8 Acres)',
+          aiType: 'success',
+          officerStatus: 'VERIFIED & LOCKED',
+          officerType: 'success',
+          canOfficerVerify: false,
+          proofText: 'Title verified free from all encumbrances under Rule 2.4.1.'
+        },
+        {
+          id: 'doc-fire',
+          name: 'Fire Safety NOC Certificate',
+          authority: 'Chief Fire Officer',
+          timestamp: '2026-10-14 16:02',
+          hash: 'c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4',
+          aiStatus: 'Expiry Warning < 30d',
+          aiType: 'warning',
+          officerStatus: 'RENEWAL_REQUIRED',
+          officerType: 'warning',
+          canOfficerVerify: true,
+          proofText: 'Fire safety inspection valid with 30d renewal notice.'
+        },
+        {
+          id: 'doc-blueprint',
+          name: 'Municipal Built-up Area Blueprint',
+          authority: 'Municipal Town Planning',
+          timestamp: '2026-10-15 09:30',
+          hash: 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855',
+          aiStatus: 'Built-up: 18,500 sq.m',
+          aiType: 'success',
+          officerStatus: 'PENDING_SCRUTINY',
+          officerType: 'info',
+          canOfficerVerify: true,
+          proofText: '18,500 sq.m verified against municipal blueprints.'
+        },
+        {
+          id: 'doc-cadre',
+          name: 'Faculty Cadre Ratio Affidavit',
+          authority: 'Notary Public / AICTE Form',
+          timestamp: '2026-10-24 14:10',
+          hash: '5f4dcc3b5aa765d61d8327deb882cf992b9699aaf479f8e4e9f7e8a9b0c1d2e3',
+          aiStatus: 'Shortfall in Associate Profs',
+          aiType: 'danger',
+          officerStatus: 'DEFICIENCY_RAISED',
+          officerType: 'danger',
+          canOfficerVerify: false,
+          proofText: 'Clause 2.14 Cadre Ratio: 4 vacancies in CS/AI.'
+        }
+      ],
+      checklist: {
+        land: { verified: true, text: 'Rule Verified', type: 'success' },
+        builtup: { verified: true, text: 'Rule Verified', type: 'success' },
+        cadre: { verified: false, text: 'DEFICIENT', type: 'danger' },
+        access: { verified: true, text: 'Rule Verified', type: 'success' }
+      }
+    };
+  },
+
+  getState() {
+    const raw = localStorage.getItem(this.STATE_KEY);
+    if (raw) {
+      try {
+        const parsed = JSON.parse(raw);
+        if (parsed && Array.isArray(parsed.documents)) return parsed;
+      } catch (e) {}
+    }
+    const def = this.getDefaultState();
+    this.saveState(def);
+    return def;
+  },
+
+  saveState(state) {
+    localStorage.setItem(this.STATE_KEY, JSON.stringify(state));
+    // Cloud Firestore Sync
+    FirebaseSync.logEvent('docket_lifecycle_sync', {
+      docket: 'AICTE-2026-ENG-4921',
+      activeStep: state.activeStep,
+      status: state.docketStatus,
+      clockOwner: state.clockOwner,
+      docCount: state.documents.length
+    });
+  },
+
+  resetDemo() {
+    localStorage.removeItem(this.STATE_KEY);
+    localStorage.removeItem('soul_netra_inst_state');
+    const fresh = this.getDefaultState();
+    this.saveState(fresh);
+    SplitClock.setOwner('INSTITUTION');
+    this.render();
+    Toast.show('Docket Lifecycle Reset: Restored to Initial Deficiency Stage (Step 3).', 'info', 4000);
+  },
+
+  // 1. Move Document on Upload
+  uploadNewDocument(category, authority, expiry) {
+    const state = this.getState();
+    const docId = 'doc-' + Date.now();
+    const cleanCat = category.replace(/_/g, ' ');
+    const fakeHash = Array.from({length: 64}, () => Math.floor(Math.random()*16).toString(16)).join('');
+
+    const newDoc = {
+      id: docId,
+      name: cleanCat,
+      authority: authority || 'State Competent Authority',
+      timestamp: 'Just now',
+      hash: fakeHash,
+      aiStatus: 'AI Pre-Check 100% Match',
+      aiType: 'success',
+      officerStatus: 'SUBMITTED (Pending Review)',
+      officerType: 'info',
+      canOfficerVerify: true,
+      proofText: `Uploaded under Rule 70(5). Expiry: ${expiry || 'Permanent'}.`,
+      isNew: true
+    };
+
+    state.documents.unshift(newDoc);
+    this.saveState(state);
+    this.render();
+
+    Toast.show(`Statutory Document [${cleanCat}] Ingested & Hashed! Moved to Council Scrutiny Queue.`, 'success', 5000);
+  },
+
+  // 2. Move Document on Rectification
+  rectifyCadreDeficiency(remarks) {
+    const state = this.getState();
+    const cadreDoc = state.documents.find(d => d.id === 'doc-cadre');
+    if (cadreDoc) {
+      cadreDoc.officerStatus = 'RECTIFIED (Pending Officer Sign-off)';
+      cadreDoc.officerType = 'info';
+      cadreDoc.canOfficerVerify = true;
+      cadreDoc.aiStatus = 'BOG Undertaking Verified';
+      cadreDoc.aiType = 'success';
+      cadreDoc.proofText = 'Resolution ref: COEP/BOG/2026/RES-419 attached.';
+    }
+
+    state.docketStatus = 'UNDER_COUNCIL_REVIEW';
+    state.clockOwner = 'ADMIN';
+    state.checklist.cadre = {
+      verified: false,
+      text: 'RECTIFICATION_FILED',
+      type: 'warning'
+    };
+
+    this.saveState(state);
+    SplitClock.setOwner('ADMIN');
+    this.render();
+
+    Toast.show('Statutory Compliance Filed: Custody Clock transferred to AICTE Council (Ref: REC-2026-9481).', 'success', 5500);
+  },
+
+  // 3. Move Document on Officer Verification & Attestation
+  officerVerifyDoc(docId) {
+    const state = this.getState();
+    const doc = state.documents.find(d => d.id === docId);
+    if (!doc) return;
+
+    doc.officerStatus = 'VERIFIED & LOCKED';
+    doc.officerType = 'success';
+    doc.canOfficerVerify = false;
+
+    if (doc.id === 'doc-cadre') {
+      state.checklist.cadre = { verified: true, text: 'Rule Verified', type: 'success' };
+    }
+
+    // Check if all verified
+    const allVerified = state.documents.every(d => d.officerStatus === 'VERIFIED & LOCKED');
+    if (allVerified && state.activeStep < 4) {
+      state.activeStep = 4;
+      state.docketStatus = 'EVC_RECOMMENDED';
+    }
+
+    this.saveState(state);
+    this.render();
+
+    // Log to Cryptographic Ledger
+    if (typeof LedgerSimulator !== 'undefined' && LedgerSimulator.blocks) {
+      const prevHash = LedgerSimulator.blocks[LedgerSimulator.blocks.length - 1].hash;
+      const payload = {
+        app_id: "AICTE-2026-ENG-4921",
+        doc_id: doc.id,
+        doc_name: doc.name,
+        officer: "RO-WRO-402",
+        status: "VERIFIED_AND_LOCKED"
+      };
+      LedgerSimulator.sha256(`${prevHash}|COUNCIL_OFFICER|VERIFY_DOC|${JSON.stringify(payload)}`).then(hash => {
+        LedgerSimulator.blocks.push({
+          height: LedgerSimulator.blocks.length,
+          prevHash: prevHash,
+          hash: hash,
+          role: "COUNCIL_OFFICER",
+          action: "VERIFY_AND_LOCK_DOC",
+          payload: payload
+        });
+        LedgerSimulator.render();
+      });
+    }
+
+    Toast.show(`Document [${doc.name}] digitally signed & locked under PKI seal!`, 'success', 4500);
+  },
+
+  // 4. Move Stage: Schedule EVC Physical Visit
+  officerScheduleEvc() {
+    const state = this.getState();
+    state.activeStep = 4;
+    state.docketStatus = 'EVC_INSPECTION_SCHEDULED';
+    this.saveState(state);
+    this.render();
+
+    Toast.show('Stage Advanced to Step 4: 3-Member Peer EVC Committee Constituted for Physical Visit.', 'info', 5000);
+  },
+
+  // 5. Move Stage: Clear Scrutiny & Grant EOA
+  officerGrantEoa() {
+    const state = this.getState();
+    state.activeStep = 5;
+    state.docketStatus = 'EOA_2026_27_GRANTED';
+    state.documents.forEach(d => {
+      d.officerStatus = 'VERIFIED & LOCKED';
+      d.officerType = 'success';
+      d.canOfficerVerify = false;
+    });
+    state.checklist.cadre = { verified: true, text: 'Rule Verified', type: 'success' };
+
+    this.saveState(state);
+    this.render();
+
+    // Also update Public Verify module if loaded
+    if (typeof PublicVerifyModule !== 'undefined' && PublicVerifyModule.colleges) {
+      const coep = PublicVerifyModule.colleges.find(c => c.pid === '1-10928371');
+      if (coep) coep.status = 'EOA 2026–27 GRANTED';
+    }
+
+    Toast.show('Approval Completed! Extension of Approval (EOA) for AY 2026–27 digitally stamped.', 'success', 6000);
+  },
+
+  // 6. Move Stage: Issue Statutory Deficiency
+  officerIssueDeficiency(clause, remarks) {
+    const state = this.getState();
+    state.activeStep = 3;
+    state.docketStatus = 'DEFICIENCY_PENDING';
+    state.clockOwner = 'COLLEGE';
+
+    const cadreDoc = state.documents.find(d => d.id === 'doc-cadre');
+    if (cadreDoc) {
+      cadreDoc.officerStatus = 'DEFICIENCY_RAISED';
+      cadreDoc.officerType = 'danger';
+      cadreDoc.canOfficerVerify = false;
+    }
+    state.checklist.cadre = { verified: false, text: 'DEFICIENT', type: 'danger' };
+
+    this.saveState(state);
+    SplitClock.setOwner('INSTITUTION');
+    this.render();
+
+    Toast.show(`Statutory Deficiency Issued citing ${clause}. Council Clock Paused; College Clock Running!`, 'error', 5500);
+  },
+
+  // 7. Render UI Across Both Desks (Moving Documents on Screen)
+  render() {
+    const state = this.getState();
+
+    // A. Render Steppers (#inst-stepper and #scrutiny-stepper)
+    ['inst-stepper', 'scrutiny-stepper'].forEach(stepperId => {
+      const container = document.getElementById(stepperId);
+      if (!container) return;
+
+      const steps = [
+        { num: 1, label: 'Draft & Fees' },
+        { num: 2, label: 'Submitted' },
+        { num: 3, label: 'Scrutiny Verification' },
+        { num: 4, label: 'EVC Physical Visit' },
+        { num: 5, label: 'EOA Grant' }
+      ];
+
+      container.innerHTML = steps.map(s => {
+        let cls = 'step-item';
+        let circleContent = s.num;
+        if (s.num < state.activeStep || state.activeStep === 5) {
+          cls += ' completed';
+          circleContent = '&#10003;';
+        } else if (s.num === state.activeStep) {
+          cls += ' active';
+        }
+        return `
+          <div class="${cls}">
+            <div class="step-circle">${circleContent}</div>
+            <div class="step-label">${s.label}</div>
+          </div>
+        `;
+      }).join('');
+    });
+
+    // B. Render Institution Document Table (#inst-doc-tbody)
+    const instTbody = document.getElementById('inst-doc-tbody');
+    if (instTbody) {
+      instTbody.innerHTML = state.documents.map(doc => {
+        let actionBtn = '';
+        if (doc.officerStatus === 'DEFICIENCY_RAISED') {
+          actionBtn = `<button class="btn btn-primary btn-xs" onclick="document.getElementById('btn-inst-scroll-deficiency').click()">Rectify</button>`;
+        } else if (doc.officerStatus === 'RENEWAL_REQUIRED') {
+          actionBtn = `<button class="btn btn-primary btn-xs" onclick="document.getElementById('btn-inst-upload-doc').click()">Upload NOC</button>`;
+        } else {
+          actionBtn = `<button class="btn btn-outline btn-xs" onclick="Toast.show('SHA-256 Hash: ${doc.hash.substring(0, 24)}... (Verified)', 'info')">Proof</button>`;
+        }
+
+        const flashCls = doc.isNew ? 'doc-row-flash' : '';
+        return `
+          <tr class="${flashCls}">
+            <td><strong>${doc.name}</strong></td>
+            <td>${doc.authority}</td>
+            <td>${doc.timestamp}</td>
+            <td><span class="badge badge-${doc.aiType}">&#10003; ${doc.aiStatus}</span></td>
+            <td><span class="badge badge-${doc.officerType}">${doc.officerStatus}</span></td>
+            <td>${actionBtn}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // C. Render Scrutiny Incoming Documents Attestation Table (#scrutiny-doc-tbody)
+    const scrutinyTbody = document.getElementById('scrutiny-doc-tbody');
+    if (scrutinyTbody) {
+      scrutinyTbody.innerHTML = state.documents.map(doc => {
+        let actionCell = '';
+        if (doc.canOfficerVerify) {
+          actionCell = `<button class="btn btn-primary btn-glow btn-xs" onclick="DocLifecycle.officerVerifyDoc('${doc.id}')">Verify &amp; Seal</button>`;
+        } else {
+          actionCell = `<span style="font-size: 0.72rem; color: var(--accent-green);">&#10003; Attested</span>`;
+        }
+
+        const flashCls = doc.isNew ? 'doc-row-flash' : '';
+        return `
+          <tr class="${flashCls}">
+            <td><strong>${doc.name}</strong></td>
+            <td>${doc.authority}</td>
+            <td><span class="badge badge-${doc.aiType}">${doc.aiStatus}</span></td>
+            <td><span class="badge badge-${doc.officerType}">${doc.officerStatus}</span></td>
+            <td>${actionCell}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // D. Update Banners & Status Badges
+    const instDocketStatus = document.getElementById('inst-docket-status');
+    const workbenchBadge = document.getElementById('workbench-badge');
+    const queueBadgeCoep = document.getElementById('queue-badge-coep');
+    const bannerTitle = document.getElementById('inst-banner-title');
+    const bannerSub = document.getElementById('inst-banner-sub');
+
+    if (state.docketStatus === 'UNDER_COUNCIL_REVIEW') {
+      if (instDocketStatus) {
+        instDocketStatus.textContent = 'UNDER_COUNCIL_REVIEW';
+        instDocketStatus.className = 'stage-badge status-info stage-badge-transition';
+      }
+      if (workbenchBadge) {
+        workbenchBadge.innerHTML = `<span class="badge badge-info">Rectification Under Review</span>`;
+      }
+      if (queueBadgeCoep) {
+        queueBadgeCoep.textContent = 'IN REVIEW';
+        queueBadgeCoep.className = 'badge badge-info';
+      }
+      if (bannerTitle) {
+        bannerTitle.textContent = 'Institutional Response Filed • Council Review Clock ACTIVE';
+        bannerTitle.style.color = '#38bdf8';
+      }
+      if (bannerSub) {
+        bannerSub.textContent = 'Compliance response received and logged to SHA-256 rolling chain. Council review latency clock is currently accountable.';
+      }
+    } else if (state.docketStatus === 'EOA_2026_27_GRANTED') {
+      if (instDocketStatus) {
+        instDocketStatus.textContent = 'EOA_2026_27_GRANTED';
+        instDocketStatus.className = 'stage-badge status-success stage-badge-transition';
+      }
+      if (workbenchBadge) {
+        workbenchBadge.innerHTML = `<span class="badge badge-success">EOA 2026-27 Granted</span>`;
+      }
+      if (queueBadgeCoep) {
+        queueBadgeCoep.textContent = 'CLEARED';
+        queueBadgeCoep.className = 'badge badge-success';
+      }
+      if (bannerTitle) {
+        bannerTitle.textContent = 'Extension of Approval (EOA) GRANTED for Academic Year 2026–27!';
+        bannerTitle.style.color = '#10b981';
+      }
+      if (bannerSub) {
+        bannerSub.textContent = 'Formal AICTE approval letter digitally signed under PKI stamp. Institutional continuing obligations logged to annual register.';
+      }
+    } else if (state.docketStatus === 'EVC_INSPECTION_SCHEDULED') {
+      if (instDocketStatus) {
+        instDocketStatus.textContent = 'EVC_SCHEDULED';
+        instDocketStatus.className = 'stage-badge status-info stage-badge-transition';
+      }
+      if (workbenchBadge) {
+        workbenchBadge.innerHTML = `<span class="badge badge-info">EVC Scheduled</span>`;
+      }
+      if (bannerTitle) {
+        bannerTitle.textContent = 'EVC Physical Verification Scheduled';
+        bannerTitle.style.color = '#38bdf8';
+      }
+    } else {
+      if (instDocketStatus) {
+        instDocketStatus.textContent = 'DEFICIENCY_PENDING';
+        instDocketStatus.className = 'stage-badge status-warning stage-badge-transition';
+      }
+      if (workbenchBadge) {
+        workbenchBadge.innerHTML = `<span class="badge badge-warning">Deficiency Pending</span>`;
+      }
+      if (queueBadgeCoep) {
+        queueBadgeCoep.textContent = 'DEFICIENCY';
+        queueBadgeCoep.className = 'badge badge-warning';
+      }
+      if (bannerTitle) {
+        bannerTitle.textContent = 'Institutional Response Clock: ACTIVE • 8 Working Days Remaining';
+        bannerTitle.style.color = '#fbbf24';
+      }
+      if (bannerSub) {
+        bannerSub.textContent = 'AICTE Western Regional Office has issued a clarification on Clause 2.14 (Faculty Cadre Ratio). Please submit compliance affidavit.';
+      }
+    }
+
+    // E. Synchronize Scrutiny Checklist
+    const chkCadre = document.getElementById('chk-cadre');
+    const chkItemCadre = chkCadre?.closest('.check-item');
+    if (chkCadre && chkItemCadre) {
+      if (state.checklist.cadre.verified) {
+        chkCadre.checked = true;
+        chkItemCadre.className = 'check-item verified';
+        const badge = chkItemCadre.querySelector('.badge');
+        if (badge) {
+          badge.className = 'badge badge-success';
+          badge.textContent = 'Rule Verified';
+        }
+      } else {
+        chkCadre.checked = false;
+        if (state.checklist.cadre.text === 'RECTIFICATION_FILED') {
+          chkItemCadre.className = 'check-item';
+          const badge = chkItemCadre.querySelector('.badge');
+          if (badge) {
+            badge.className = 'badge badge-warning';
+            badge.textContent = 'Rectification Filed (Review Required)';
+          }
+        } else {
+          chkItemCadre.className = 'check-item deficient';
+          const badge = chkItemCadre.querySelector('.badge');
+          if (badge) {
+            badge.className = 'badge badge-danger';
+            badge.textContent = 'DEFICIENT';
+          }
+        }
+      }
+    }
+  }
+};
+
+// ==========================================================================
+// 8. Institution Portal Manager (#/institution)
 // ==========================================================================
 const InstitutionPortal = {
   init() {
-    this.restoreState();
     this.bindEvents();
-  },
-
-  restoreState() {
-    const saved = localStorage.getItem('soul_netra_inst_state');
-    if (saved) {
-      try {
-        const data = JSON.parse(saved);
-        if (data.status === 'UNDER_COUNCIL_REVIEW') {
-          const bannerTitle = document.getElementById('inst-banner-title');
-          const bannerSub = document.getElementById('inst-banner-sub');
-          const statusBadge = document.getElementById('inst-docket-status');
-
-          if (bannerTitle) {
-            bannerTitle.textContent = 'Institutional Response Filed • Council Review Clock ACTIVE';
-            bannerTitle.style.color = '#38bdf8';
-          }
-          if (bannerSub) {
-            bannerSub.textContent = 'Compliance response received and logged to SHA-256 rolling chain. Council review latency clock is now accountable.';
-          }
-          if (statusBadge) {
-            statusBadge.textContent = 'UNDER_COUNCIL_REVIEW';
-            statusBadge.className = 'stage-badge status-info';
-          }
-        }
-      } catch (e) {}
-    }
+    DocLifecycle.render();
   },
 
   bindEvents() {
+    // Reset Lifecycle Demo
+    const btnReset = document.getElementById('btn-inst-reset-demo');
+    if (btnReset) {
+      btnReset.addEventListener('click', () => DocLifecycle.resetDemo());
+    }
+
     // Refresh button
     const btnRefresh = document.getElementById('btn-inst-refresh');
     if (btnRefresh) {
       btnRefresh.addEventListener('click', () => {
         Toast.show('Syncing Application Docket AICTE-2026-ENG-4921 with Central Ledger...', 'info');
         setTimeout(() => {
+          DocLifecycle.render();
           Toast.show('Docket state verified against SHA-256 chain. 0 discrepancies.', 'success');
-        }, 800);
+        }, 600);
       });
     }
 
@@ -463,54 +999,22 @@ const InstitutionPortal = {
       });
     }
 
-    // Deficiency rectification form submission
+    // Deficiency rectification form submission (Moves document & advances state)
     const formDeficiency = document.getElementById('form-inst-deficiency');
     if (formDeficiency) {
       formDeficiency.addEventListener('submit', async (e) => {
         e.preventDefault();
         const remarks = document.getElementById('inst-reply-text').value.trim();
         if (!remarks) {
-          Toast.show('Please provide the institutional compliance remarks or BOG resolution details.', 'error');
+          Toast.show('Please provide institutional compliance remarks or BOG resolution details.', 'error');
           return;
         }
 
-        // 1. Update UI Status
-        const bannerTitle = document.getElementById('inst-banner-title');
-        const bannerSub = document.getElementById('inst-banner-sub');
-        const statusBadge = document.getElementById('inst-docket-status');
+        // Move document and transfer custody clock to Council
+        DocLifecycle.rectifyCadreDeficiency(remarks);
 
-        if (bannerTitle) {
-          bannerTitle.textContent = 'Institutional Response Filed • Council Review Clock ACTIVE';
-          bannerTitle.style.color = '#38bdf8';
-        }
-        if (bannerSub) {
-          bannerSub.textContent = 'Compliance response received and logged to SHA-256 rolling chain. Council review latency clock is now accountable under Supreme Court Parshvanath schedule.';
-        }
-        if (statusBadge) {
-          statusBadge.textContent = 'UNDER_COUNCIL_REVIEW';
-          statusBadge.className = 'stage-badge status-info';
-        }
-
-        // 2. Transfer Clock Custody to Council
-        SplitClock.setOwner('ADMIN');
-
-        // 3. Save state in localStorage so logging out remembers!
-        localStorage.setItem('soul_netra_inst_state', JSON.stringify({
-          status: 'UNDER_COUNCIL_REVIEW',
-          remarks: remarks,
-          timestamp: new Date().toISOString()
-        }));
-
-        // 4. Log to Firebase Firestore
-        FirebaseSync.logEvent('compliance_filings', {
-          app_id: "AICTE-2026-ENG-4921",
-          clause: "Clause 2.14 Cadre Ratio",
-          resolution_ref: "COEP/BOG/2026/RES-419",
-          remarks: remarks
-        });
-
-        // 5. Append block to cryptographic ledger
-        if (LedgerSimulator.blocks) {
+        // Append block to cryptographic ledger
+        if (typeof LedgerSimulator !== 'undefined' && LedgerSimulator.blocks) {
           const prevHash = LedgerSimulator.blocks[LedgerSimulator.blocks.length - 1].hash;
           const payload = {
             app_id: "AICTE-2026-ENG-4921",
@@ -531,8 +1035,6 @@ const InstitutionPortal = {
           });
           LedgerSimulator.render();
         }
-
-        Toast.show('Statutory Compliance Filed: Custody Clock transferred to AICTE Council (Ref: REC-2026-9481).', 'success', 5000);
       });
     }
 
@@ -552,40 +1054,18 @@ const InstitutionPortal = {
       btnCancelUpload.addEventListener('click', () => uploadOverlay.classList.remove('show'));
     }
 
-    // Upload Document Form Submit
+    // Upload Document Form Submit (Moves new document into scrutiny queue)
     const formUpload = document.getElementById('form-upload-document');
     if (formUpload) {
-      formUpload.addEventListener('submit', async (e) => {
+      formUpload.addEventListener('submit', (e) => {
         e.preventDefault();
         const category = document.getElementById('upload-doc-category').value;
         const authority = document.getElementById('upload-doc-authority').value;
         const expiry = document.getElementById('upload-doc-expiry').value;
 
-        // Add row to table
-        const tbody = document.querySelector('#inst-doc-table tbody');
-        if (tbody) {
-          const tr = document.createElement('tr');
-          tr.innerHTML = `
-            <td><strong>${category.replace(/_/g, ' ')}</strong></td>
-            <td>${authority}</td>
-            <td>Just now</td>
-            <td><span class="badge badge-success">&#10003; AI Pre-Check Valid</span></td>
-            <td><span class="badge badge-info">SUBMITTED (Pending Review)</span></td>
-            <td><button class="btn btn-outline btn-xs" onclick="Toast.show('Ingested with SHA-256 digital stamp.', 'info')">Proof</button></td>
-          `;
-          tbody.prepend(tr);
-        }
-
-        // Log to Firebase Firestore
-        FirebaseSync.logEvent('uploaded_documents', {
-          category: category,
-          authority: authority,
-          expiry: expiry,
-          institution: "COEP Technological University"
-        });
+        DocLifecycle.uploadNewDocument(category, authority, expiry);
 
         if (uploadOverlay) uploadOverlay.classList.remove('show');
-        Toast.show(`Statutory Document [${category}] Ingested & Hashed under Rule 70(5). AI Pre-Check Cleared!`, 'success', 5000);
       });
     }
 
@@ -599,45 +1079,40 @@ const InstitutionPortal = {
 };
 
 // ==========================================================================
-// 7. Scrutiny Desk Manager (#/scrutiny)
+// 9. Scrutiny Desk Manager (#/scrutiny)
 // ==========================================================================
 const ScrutinyDesk = {
   apps: {
     'AICTE-2026-ENG-4921': {
       title: 'Inspection Dossier: COEP Technological University, Pune',
-      sub: 'Application Docket #AICTE-2026-ENG-4921 • Category: Extension of Approval (EOA)',
-      status: 'DEFICIENCY_PENDING',
-      statusClass: 'status-warning',
-      statusText: 'Deficiency Pending'
+      sub: 'Application Docket #AICTE-2026-ENG-4921 • Category: Extension of Approval (EOA)'
     },
     'AICTE-2026-ENG-5102': {
       title: 'Inspection Dossier: Veermata Jijabai Technological Institute (VJTI), Mumbai',
-      sub: 'Application Docket #AICTE-2026-ENG-5102 • Category: New AI & Data Science Specialization',
-      status: 'UNDER_SCRUTINY',
-      statusClass: 'status-info',
-      statusText: 'Under Scrutiny'
+      sub: 'Application Docket #AICTE-2026-ENG-5102 • Category: New AI & Data Science Specialization'
     },
     'AICTE-2026-ENG-6391': {
       title: 'Inspection Dossier: Sardar Patel College of Engineering (SPCE), Mumbai',
-      sub: 'Application Docket #AICTE-2026-ENG-6391 • Category: Civil & Mechanical Expansion',
-      status: 'SLA_CRITICAL',
-      statusClass: 'status-danger',
-      statusText: 'SLA Critical (< 18h)'
+      sub: 'Application Docket #AICTE-2026-ENG-6391 • Category: Civil & Mechanical Expansion'
     },
     'AICTE-2026-PHARM-1082': {
       title: 'Inspection Dossier: Bombay College of Pharmacy, Mumbai',
-      sub: 'Application Docket #AICTE-2026-PHARM-1082 • Category: B.Pharm Intake Enhancement',
-      status: 'SCRUTINY_CLEARED',
-      statusClass: 'status-success',
-      statusText: 'Scrutiny Cleared'
+      sub: 'Application Docket #AICTE-2026-PHARM-1082 • Category: B.Pharm Intake Enhancement'
     }
   },
 
   init() {
     this.bindEvents();
+    DocLifecycle.render();
   },
 
   bindEvents() {
+    // Reset Demo Button
+    const btnReset = document.getElementById('btn-scrutiny-reset-demo');
+    if (btnReset) {
+      btnReset.addEventListener('click', () => DocLifecycle.resetDemo());
+    }
+
     // Queue Item Selection
     document.querySelectorAll('.queue-item').forEach(item => {
       item.addEventListener('click', () => {
@@ -649,12 +1124,8 @@ const ScrutinyDesk = {
         if (data) {
           const title = document.getElementById('workbench-title');
           const sub = document.getElementById('workbench-subtitle');
-          const badge = document.getElementById('workbench-badge');
           if (title) title.textContent = data.title;
           if (sub) sub.textContent = data.sub;
-          if (badge) {
-            badge.innerHTML = `<span class="badge ${data.statusClass}">${data.statusText}</span>`;
-          }
           Toast.show(`Loaded Application Dossier: ${appId}`, 'info');
         }
       });
@@ -676,66 +1147,32 @@ const ScrutinyDesk = {
     if (defClose) defClose.addEventListener('click', () => defOverlay.classList.remove('show'));
     if (defCancel) defCancel.addEventListener('click', () => defOverlay.classList.remove('show'));
 
-    // Deficiency Form Submit
+    // Deficiency Form Submit (Moves document to deficient & returns clock to College)
     const formDef = document.getElementById('form-issue-deficiency');
     if (formDef) {
-      formDef.addEventListener('submit', async (e) => {
+      formDef.addEventListener('submit', (e) => {
         e.preventDefault();
         const clause = document.getElementById('def-clause-select').value;
         const remarks = document.getElementById('def-remarks').value;
 
-        // 1. Transfer Clock Custody to Institution
-        SplitClock.setOwner('INSTITUTION');
-
-        // 2. Append to ledger
-        if (LedgerSimulator.blocks) {
-          const prevHash = LedgerSimulator.blocks[LedgerSimulator.blocks.length - 1].hash;
-          const payload = {
-            app_id: "AICTE-2026-ENG-4921",
-            officer_id: "RO-WRO-402",
-            clause_cited: clause,
-            observation: remarks.substring(0, 45) + '...'
-          };
-          const raw = `${prevHash}|REGIONAL_OFFICE_WRO|ISSUE_DEFICIENCY|${JSON.stringify(payload)}`;
-          const hash = await LedgerSimulator.sha256(raw);
-
-          LedgerSimulator.blocks.push({
-            height: LedgerSimulator.blocks.length,
-            prevHash: prevHash,
-            hash: hash,
-            role: "REGIONAL_OFFICE_WRO",
-            action: "ISSUE_DEFICIENCY",
-            payload: payload
-          });
-          LedgerSimulator.render();
-        }
-
-        // 3. Log to Firebase Firestore
-        FirebaseSync.logEvent('deficiency_notices', {
-          app_id: "AICTE-2026-ENG-4921",
-          clause_cited: clause,
-          officer: "RO-WRO-402",
-          remarks: remarks
-        });
-
+        DocLifecycle.officerIssueDeficiency(clause, remarks);
         if (defOverlay) defOverlay.classList.remove('show');
-        Toast.show(`Statutory Deficiency Issued citing ${clause}. Council Clock Stopped; College Clock Activated!`, 'error', 6000);
       });
     }
 
-    // Recommend EVC
+    // Recommend EVC (Moves stage to Step 4)
     const btnEvc = document.getElementById('btn-officer-recommend-evc');
     if (btnEvc) {
       btnEvc.addEventListener('click', () => {
-        Toast.show('EVC Inspection Scheduled: 3-Member External Peer Committee constituted for on-site infrastructure verification.', 'info', 5000);
+        DocLifecycle.officerScheduleEvc();
       });
     }
 
-    // Grant EOA
+    // Grant EOA (Moves stage to Step 5)
     const btnEoa = document.getElementById('btn-officer-grant-eoa');
     if (btnEoa) {
       btnEoa.addEventListener('click', () => {
-        Toast.show('Approval Process Completed! Extension of Approval (EOA) for AY 2026–27 digitally signed under PKI stamp.', 'success', 6000);
+        DocLifecycle.officerGrantEoa();
       });
     }
   }
@@ -1463,6 +1900,7 @@ const CounterAnimation = {
 // Bootstrap Engine on DOMContentLoaded
 // ==========================================================================
 document.addEventListener('DOMContentLoaded', () => {
+  ScrollReveal.init();
   FirebaseSync.init();
   ThemeManager.init();
   AuthManager.init();

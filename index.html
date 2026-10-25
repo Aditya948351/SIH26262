@@ -285,6 +285,10 @@
           <span class="pid-tag">AICTE PID: 1-10928371 &bull; Region: WRO Mumbai</span>
         </div>
         <div class="endpoint-actions">
+          <button class="btn btn-outline btn-sm" id="btn-inst-reset-demo" title="Reset Docket Lifecycle to initial test state" style="color: var(--accent-amber); border-color: rgba(245, 158, 11, 0.4);">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+            Reset Demo State
+          </button>
           <button class="btn btn-outline btn-sm" id="btn-inst-refresh">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
             Refresh Docket
@@ -452,7 +456,7 @@
                 <th>Actions</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody id="inst-doc-tbody">
               <tr>
                 <td><strong>30-Year Registered Land Lease</strong></td>
                 <td>Sub-Registrar / Revenue Dept</td>
@@ -502,6 +506,10 @@
           <span class="pid-tag">Officer ID: RO-WRO-402 &bull; Active Jurisdiction: Maharashtra &amp; Goa</span>
         </div>
         <div class="endpoint-actions">
+          <button class="btn btn-outline btn-sm" id="btn-scrutiny-reset-demo" title="Reset Docket Lifecycle to initial test state" style="color: var(--accent-amber); border-color: rgba(245, 158, 11, 0.4);">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+            Reset Demo State
+          </button>
           <button class="btn btn-outline btn-sm" id="btn-scrutiny-filter-all">All (18)</button>
           <button class="btn btn-outline btn-sm" id="btn-scrutiny-filter-critical" style="color: var(--accent-red);">SLA Critical (3)</button>
           <button class="btn btn-primary btn-sm" id="btn-scrutiny-issue-deficiency">
@@ -588,6 +596,54 @@
             </div>
             <div class="workbench-status" id="workbench-badge">
               <span class="badge badge-warning">Deficiency Pending</span>
+            </div>
+          </div>
+
+          <!-- Synchronized Stage Stepper on Scrutiny Workbench -->
+          <div class="stepper-container" id="scrutiny-stepper" style="margin: 0.75rem 0 1.25rem 0;">
+            <div class="step-item completed">
+              <div class="step-circle">&#10003;</div>
+              <div class="step-label">Draft &amp; Fees</div>
+            </div>
+            <div class="step-item completed">
+              <div class="step-circle">&#10003;</div>
+              <div class="step-label">Submitted</div>
+            </div>
+            <div class="step-item active">
+              <div class="step-circle">3</div>
+              <div class="step-label">Scrutiny Verification</div>
+            </div>
+            <div class="step-item">
+              <div class="step-circle">4</div>
+              <div class="step-label">EVC Physical Visit</div>
+            </div>
+            <div class="step-item">
+              <div class="step-circle">5</div>
+              <div class="step-label">EOA Grant</div>
+            </div>
+          </div>
+
+          <!-- Active Document Ingestion & Verification Vault in Scrutiny -->
+          <div style="margin: 1rem 0; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 0.85rem; background: rgba(15, 23, 42, 0.4);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.65rem;">
+              <strong style="font-size: 0.86rem; color: var(--brand-cyan);">Incoming Document Attestation Queue (Rule 70(5))</strong>
+              <span class="sih-badge" style="font-size: 0.65rem;">Live Cross-Desk Sync</span>
+            </div>
+            <div class="table-responsive">
+              <table class="data-table" id="scrutiny-doc-table">
+                <thead>
+                  <tr>
+                    <th>Document Name</th>
+                    <th>Statutory Authority</th>
+                    <th>AI Pre-Check</th>
+                    <th>Officer Status</th>
+                    <th>Attestation Action</th>
+                  </tr>
+                </thead>
+                <tbody id="scrutiny-doc-tbody">
+                  <!-- Rendered dynamically by DocLifecycle -->
+                </tbody>
+              </table>
             </div>
           </div>
 

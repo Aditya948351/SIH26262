@@ -125,14 +125,14 @@ body {
 }
 
 /* ==========================================================================
-   Scroll Reveal Animations
+   Scroll Reveal & Dynamic Visibility Animations (Guaranteed Non-Blank)
    ========================================================================== */
 .reveal-section,
 .reveal-item {
-  opacity: 0;
-  transform: translateY(35px);
-  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), 
-              transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), 
+              transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .reveal-section.revealed,
@@ -141,9 +141,31 @@ body {
   transform: translateY(0);
 }
 
-.reveal-item:nth-child(2) { transition-delay: 0.1s; }
-.reveal-item:nth-child(3) { transition-delay: 0.2s; }
-.reveal-item:nth-child(4) { transition-delay: 0.3s; }
+/* Moving Document & Stage Transition Animations */
+@keyframes docRowFlash {
+  0% { background-color: rgba(56, 189, 248, 0.35); transform: scale(1.01); }
+  50% { background-color: rgba(16, 185, 129, 0.25); }
+  100% { background-color: transparent; transform: scale(1); }
+}
+
+@keyframes pulseGlow {
+  0% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.5); }
+  70% { box-shadow: 0 0 0 12px rgba(56, 189, 248, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0); }
+}
+
+.doc-row-flash {
+  animation: docRowFlash 2.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.stage-badge-transition {
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: pulseGlow 1.5s ease-out;
+}
+
+.reveal-item:nth-child(2) { transition-delay: 0.05s; }
+.reveal-item:nth-child(3) { transition-delay: 0.1s; }
+.reveal-item:nth-child(4) { transition-delay: 0.15s; }
 .reveal-item:nth-child(5) { transition-delay: 0.4s; }
 
 /* ==========================================================================
