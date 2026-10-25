@@ -32,7 +32,7 @@
           <div style="display: flex; align-items: center; gap: 0.65rem;">
             <!-- Document Switcher Toggle -->
             <select v-model="selectedDocument" class="form-select doc-tab-selector">
-              <option value="/viewer/copyright_dossier.html">
+              <option value="/viewer/official_copyright_dossier_v3.html">
                 📄 Software Copyright Dossier (30+ Pages, Complete Technical Filing)
               </option>
               <option value="/viewer/final_report.html">
@@ -78,7 +78,7 @@
           <!-- Protected Iframe Rendering the Complete 30+ Page Document -->
           <iframe 
             class="report-dossier-iframe" 
-            :src="selectedDocument" 
+            :src="iframeSrc" 
             :style="{ transform: `scale(${zoomLevel})`, transformOrigin: 'top center' }"
             title="SOUL NETRA Official Complete Statutory Technical Dossier (30+ Pages)"
           ></iframe>
@@ -100,7 +100,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { useToastStore } from '../stores/toast';
 
 const props = defineProps({
@@ -110,7 +110,9 @@ const props = defineProps({
 const emit = defineEmits(['close']);
 const toast = useToastStore();
 
-const selectedDocument = ref('/viewer/copyright_dossier.html');
+const buildTime = '20261025_2315';
+const selectedDocument = ref('/viewer/official_copyright_dossier_v3.html');
+const iframeSrc = computed(() => `${selectedDocument.value}?v=${buildTime}`);
 const zoomLevel = ref(1.0);
 
 function zoomIn() {
