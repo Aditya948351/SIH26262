@@ -1,7 +1,7 @@
 /**
  * SOUL NETRA (SIH26262) — Core Solution Platform Client Engine
  * Live Interactive Simulator for Split-Clock SLA, Polymorphic Routes,
- * Cryptographic SHA-256 Rolling Ledger & Continuing Compliance.
+ * Cryptographic SHA-256 Rolling Ledger, Secure Report Viewer & Animations.
  */
 
 // ==========================================================================
@@ -58,17 +58,238 @@ const Toast = {
     toast.innerHTML = `${iconSvg}<span>${message}</span>`;
     container.appendChild(toast);
 
-    requestAnimationFrame(() => toast.classList.add('show'));
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => toast.classList.add('show'));
+    });
 
     setTimeout(() => {
       toast.classList.remove('show');
-      setTimeout(() => toast.remove(), 300);
+      setTimeout(() => toast.remove(), 400);
     }, duration);
   }
 };
 
 // ==========================================================================
-// 3. Live Dual-Accumulator Split-Clock Engine
+// 3. Scroll Reveal Observer
+// ==========================================================================
+const ScrollReveal = {
+  init() {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('revealed');
+            // Don't unobserve — keep it for future scrolls if needed
+          }
+        });
+      },
+      { threshold: 0.08, rootMargin: '0px 0px -40px 0px' }
+    );
+
+    document.querySelectorAll('.reveal-section, .reveal-item').forEach(el => {
+      observer.observe(el);
+    });
+  }
+};
+
+// ==========================================================================
+// 4. Counter Animation (Hero Stats)
+// ==========================================================================
+const CounterAnimation = {
+  init() {
+    const counters = document.querySelectorAll('.counter');
+    
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting && !entry.target.dataset.animated) {
+            entry.target.dataset.animated = 'true';
+            this.animateCounter(entry.target);
+          }
+        });
+      },
+      { threshold: 0.5 }
+    );
+
+    counters.forEach(counter => observer.observe(counter));
+  },
+
+  animateCounter(el) {
+    const target = parseInt(el.dataset.target, 10);
+    const duration = 2000;
+    const start = performance.now();
+
+    const step = (timestamp) => {
+      const progress = Math.min((timestamp - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 4); // easeOutQuart
+      const current = Math.floor(eased * target);
+      el.textContent = current.toLocaleString() + '+';
+      if (progress < 1) {
+        requestAnimationFrame(step);
+      } else {
+        el.textContent = target.toLocaleString() + '+';
+      }
+    };
+
+    requestAnimationFrame(step);
+  }
+};
+
+// ==========================================================================
+// 5. Navbar Scroll Effects
+// ==========================================================================
+const NavbarEffects = {
+  init() {
+    const navbar = document.getElementById('navbar');
+    if (!navbar) return;
+
+    let lastScroll = 0;
+    window.addEventListener('scroll', () => {
+      const scrollY = window.scrollY;
+      if (scrollY > 30) {
+        navbar.classList.add('scrolled');
+      } else {
+        navbar.classList.remove('scrolled');
+      }
+      lastScroll = scrollY;
+    }, { passive: true });
+
+    // Active nav link tracking
+    const sections = document.querySelectorAll('.section[id]');
+    const navLinks = document.querySelectorAll('.nav-link');
+
+    const linkObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            navLinks.forEach(l => l.classList.remove('active'));
+            const link = document.querySelector(`.nav-link[href="#${entry.target.id}"]`);
+            if (link) link.classList.add('active');
+          }
+        });
+      },
+      { threshold: 0.3 }
+    );
+
+    sections.forEach(sec => linkObserver.observe(sec));
+  }
+};
+
+// ==========================================================================
+// 6. Mobile Navigation
+// ==========================================================================
+const MobileNav = {
+  init() {
+    const hamburger = document.getElementById('hamburger');
+    const overlay = document.getElementById('mobile-nav-overlay');
+    const navLinks = document.querySelectorAll('.nav-links .nav-link');
+    
+    if (!hamburger || !overlay) return;
+
+    // Populate mobile overlay with same links
+    const links = [...navLinks].map(l => 
+      `<a href="${l.getAttribute('href')}">${l.textContent}</a>`
+    ).join('');
+    overlay.innerHTML = links;
+
+    hamburger.addEventListener('click', () => {
+      hamburger.classList.toggle('active');
+      overlay.classList.toggle('active');
+      document.body.style.overflow = overlay.classList.contains('active') ? 'hidden' : '';
+    });
+
+    overlay.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', () => {
+        hamburger.classList.remove('active');
+        overlay.classList.remove('active');
+        document.body.style.overflow = '';
+      });
+    });
+  }
+};
+
+// ==========================================================================
+// 7. Floating Particle System
+// ==========================================================================
+const ParticleSystem = {
+  particles: [],
+  canvas: null,
+  ctx: null,
+
+  init() {
+    this.canvas = document.getElementById('particle-canvas');
+    if (!this.canvas) return;
+    this.ctx = this.canvas.getContext('2d');
+    this.resize();
+    this.createParticles();
+    this.animate();
+
+    window.addEventListener('resize', () => this.resize());
+  },
+
+  resize() {
+    this.canvas.width = window.innerWidth;
+    this.canvas.height = window.innerHeight;
+  },
+
+  createParticles() {
+    const count = Math.min(Math.floor(window.innerWidth / 25), 50);
+    this.particles = [];
+    for (let i = 0; i < count; i++) {
+      this.particles.push({
+        x: Math.random() * this.canvas.width,
+        y: Math.random() * this.canvas.height,
+        size: Math.random() * 2 + 0.5,
+        speedX: (Math.random() - 0.5) * 0.3,
+        speedY: (Math.random() - 0.5) * 0.3,
+        opacity: Math.random() * 0.4 + 0.1,
+        hue: Math.random() > 0.5 ? 197 : 231 // cyan or indigo
+      });
+    }
+  },
+
+  animate() {
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+    this.particles.forEach(p => {
+      p.x += p.speedX;
+      p.y += p.speedY;
+
+      // Wrap around
+      if (p.x < 0) p.x = this.canvas.width;
+      if (p.x > this.canvas.width) p.x = 0;
+      if (p.y < 0) p.y = this.canvas.height;
+      if (p.y > this.canvas.height) p.y = 0;
+
+      this.ctx.beginPath();
+      this.ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      this.ctx.fillStyle = `hsla(${p.hue}, 80%, 65%, ${p.opacity})`;
+      this.ctx.fill();
+    });
+
+    // Draw connections between nearby particles
+    for (let i = 0; i < this.particles.length; i++) {
+      for (let j = i + 1; j < this.particles.length; j++) {
+        const dx = this.particles[i].x - this.particles[j].x;
+        const dy = this.particles[i].y - this.particles[j].y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 120) {
+          this.ctx.beginPath();
+          this.ctx.moveTo(this.particles[i].x, this.particles[i].y);
+          this.ctx.lineTo(this.particles[j].x, this.particles[j].y);
+          this.ctx.strokeStyle = `rgba(56, 189, 248, ${0.06 * (1 - dist / 120)})`;
+          this.ctx.lineWidth = 0.5;
+          this.ctx.stroke();
+        }
+      }
+    }
+
+    requestAnimationFrame(() => this.animate());
+  }
+};
+
+// ==========================================================================
+// 8. Live Dual-Accumulator Split-Clock Engine
 // ==========================================================================
 const SplitClock = {
   instMs: 142000,
@@ -171,7 +392,7 @@ const SplitClock = {
 };
 
 // ==========================================================================
-// 4. Polymorphic Route Simulator
+// 9. Polymorphic Route Simulator
 // ==========================================================================
 const RouteSimulator = {
   routes: {
@@ -277,7 +498,7 @@ const RouteSimulator = {
 };
 
 // ==========================================================================
-// 5. Cryptographic SHA-256 Rolling Hash Chain Ledger
+// 10. Cryptographic SHA-256 Rolling Hash Chain Ledger
 // ==========================================================================
 const LedgerSimulator = {
   blocks: [],
@@ -383,7 +604,7 @@ const LedgerSimulator = {
         if (isChainValid) {
           Toast.show('Cryptographic Audit Verification Passed: All blocks mathematically valid and tamper-free (0 mutations found)', 'success', 5000);
         } else {
-          Toast.show(`CRITICAL TAMPER DETECTED at Block #${corruptedHeight}! Cryptographic Merkle-Damg\\u00e5rd hash mismatch! Integrity breached.`, 'error', 6000);
+          Toast.show(`CRITICAL TAMPER DETECTED at Block #${corruptedHeight}! Cryptographic hash mismatch! Integrity breached.`, 'error', 6000);
         }
       });
     }
@@ -399,7 +620,7 @@ const LedgerSimulator = {
 };
 
 // ==========================================================================
-// 6. Working-Day Statutory Deadline Calculator
+// 11. Working-Day Statutory Deadline Calculator
 // ==========================================================================
 const DeadlineCalculator = {
   gazettedHolidays: [
@@ -463,7 +684,7 @@ const DeadlineCalculator = {
 };
 
 // ==========================================================================
-// 7. Cost Model Explorer
+// 12. Cost Model Explorer
 // ==========================================================================
 const CostExplorer = {
   scenarios: {
@@ -489,14 +710,142 @@ const CostExplorer = {
 };
 
 // ==========================================================================
+// 13. Secure Report Viewer (View Only, Watermark, No Download/Copy)
+// ==========================================================================
+const SecureReportViewer = {
+  overlay: null,
+  iframe: null,
+  watermarkOverlay: null,
+
+  init() {
+    this.overlay = document.getElementById('report-viewer-overlay');
+    this.iframe = document.getElementById('report-iframe');
+    this.watermarkOverlay = document.getElementById('watermark-overlay');
+
+    const openBtn = document.getElementById('btn-open-report');
+    const openBtnNav = document.getElementById('btn-open-report-nav');
+    const closeBtn = document.getElementById('report-close-btn');
+
+    if (openBtn) openBtn.addEventListener('click', () => this.open());
+    if (openBtnNav) openBtnNav.addEventListener('click', () => this.open());
+    if (closeBtn) closeBtn.addEventListener('click', () => this.close());
+
+    // Close on overlay background click
+    if (this.overlay) {
+      this.overlay.addEventListener('click', (e) => {
+        if (e.target === this.overlay) this.close();
+      });
+    }
+
+    // Close on Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') this.close();
+    });
+
+    // Generate watermark tiles
+    this.generateWatermark();
+
+    // Global protections
+    this.setupProtections();
+  },
+
+  open() {
+    if (!this.overlay || !this.iframe) return;
+
+    // Load PDF with toolbar=0 to hide browser PDF toolbar
+    this.iframe.src = 'docs/SOUL_NETRA_Copyright_Technical_Report.pdf#toolbar=0&navpanes=0&scrollbar=1&statusbar=0&view=FitH';
+    
+    this.overlay.style.display = 'flex';
+    requestAnimationFrame(() => {
+      this.overlay.classList.add('active');
+    });
+    document.body.style.overflow = 'hidden';
+
+    Toast.show('Report opened in secure view-only mode. Downloading and copying are disabled.', 'info', 3000);
+  },
+
+  close() {
+    if (!this.overlay) return;
+    this.overlay.classList.remove('active');
+    setTimeout(() => {
+      this.overlay.style.display = 'none';
+      if (this.iframe) this.iframe.src = '';
+    }, 350);
+    document.body.style.overflow = '';
+  },
+
+  generateWatermark() {
+    if (!this.watermarkOverlay) return;
+    this.watermarkOverlay.innerHTML = '';
+
+    const texts = [
+      'CONFIDENTIAL',
+      'SOUL NETRA • SIH26262',
+      'VIEW ONLY',
+      'DO NOT COPY',
+      'TEAM SOUL NETRA © 2026'
+    ];
+
+    // Create a grid of diagonal watermark text
+    for (let row = -2; row < 15; row++) {
+      for (let col = -1; col < 6; col++) {
+        const text = document.createElement('div');
+        text.className = 'watermark-text';
+        text.textContent = texts[(row + col) % texts.length];
+        text.style.top = `${row * 140}px`;
+        text.style.left = `${col * 380}px`;
+        this.watermarkOverlay.appendChild(text);
+      }
+    }
+  },
+
+  setupProtections() {
+    // Disable right-click on the report viewer body
+    const viewerBody = document.getElementById('report-viewer-body');
+    if (viewerBody) {
+      viewerBody.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        Toast.show('Right-click is disabled on this protected document', 'error', 2000);
+      });
+    }
+
+    // Disable Ctrl+S, Ctrl+P, Ctrl+C on overlay
+    document.addEventListener('keydown', (e) => {
+      if (this.overlay && this.overlay.classList.contains('active')) {
+        if (
+          (e.ctrlKey && (e.key === 's' || e.key === 'S')) ||
+          (e.ctrlKey && (e.key === 'p' || e.key === 'P')) ||
+          (e.ctrlKey && (e.key === 'c' || e.key === 'C')) ||
+          (e.ctrlKey && (e.key === 'a' || e.key === 'A'))
+        ) {
+          e.preventDefault();
+          Toast.show('This action is restricted on the protected report', 'error', 2000);
+        }
+      }
+    });
+
+    // Prevent dragging
+    if (viewerBody) {
+      viewerBody.addEventListener('dragstart', (e) => e.preventDefault());
+    }
+  }
+};
+
+// ==========================================================================
 // App Initialization
 // ==========================================================================
 document.addEventListener('DOMContentLoaded', () => {
   ThemeManager.init();
+  ScrollReveal.init();
+  CounterAnimation.init();
+  NavbarEffects.init();
+  MobileNav.init();
+  ParticleSystem.init();
   SplitClock.init();
   RouteSimulator.init();
   LedgerSimulator.init();
   DeadlineCalculator.init();
   CostExplorer.init();
+  SecureReportViewer.init();
   console.log('SOUL NETRA Solution Platform (SIH26262) Initialized Successfully.');
 });

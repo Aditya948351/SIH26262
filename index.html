@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SOUL NETRA | Solution Platform & Regulatory Workflow Engine (SIH26262)</title>
   <meta name="description" content="SOUL NETRA: System for Oversight, Unified Lifecycle — Network for Evaluation, Tracking, Reporting & Accountability. An Explainable, Rule-Version-Aware Regulatory Workflow Engine for AICTE Approval Processes.">
+  <link rel="icon" href="logo.png" type="image/png">
   <link rel="stylesheet" href="styles.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,13 +16,19 @@
   <!-- Ambient Background Mesh -->
   <div class="ambient-mesh"></div>
 
+  <!-- Floating Particle Canvas -->
+  <canvas id="particle-canvas"></canvas>
+
   <!-- Top Toast Notification Container -->
   <div class="toast-container" id="toast-container"></div>
 
+  <!-- Mobile Nav Overlay -->
+  <div class="mobile-nav-overlay" id="mobile-nav-overlay"></div>
+
   <!-- Navigation Bar -->
-  <nav class="navbar">
+  <nav class="navbar" id="navbar">
     <a href="#" class="nav-brand">
-      <div class="brand-icon">SN</div>
+      <img src="logo.png" alt="Soul Netra Logo" class="brand-logo">
       <div class="brand-titles">
         <div class="brand-title">
           SOUL NETRA
@@ -31,7 +38,7 @@
       </div>
     </a>
 
-    <ul class="nav-links">
+    <ul class="nav-links" id="nav-links">
       <li><a href="#simulator" class="nav-link">Workflow Simulator</a></li>
       <li><a href="#split-clock" class="nav-link">Split-Clock SLA</a></li>
       <li><a href="#ledger" class="nav-link">Cryptographic Ledger</a></li>
@@ -44,62 +51,72 @@
       <button class="theme-toggle" id="theme-toggle" title="Toggle Dark/Light Mode" aria-label="Toggle Theme">
         <span id="theme-icon"></span>
       </button>
-      <a href="docs/SOUL_NETRA_Copyright_Technical_Report.pdf" class="btn btn-primary" download>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        <span>Copyright Report (PDF)</span>
-      </a>
+      <button class="btn btn-primary btn-glow" id="btn-open-report-nav">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        <span>View Report</span>
+      </button>
+      <button class="hamburger" id="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
     </div>
   </nav>
 
   <!-- Hero Showcase Section -->
-  <header class="hero">
-    <div class="hero-pill">
+  <header class="hero reveal-section">
+    <div class="hero-glow-orb hero-orb-1"></div>
+    <div class="hero-glow-orb hero-orb-2"></div>
+
+    <div class="hero-pill reveal-item">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 14 14"/></svg>
       Smart India Hackathon 2026 &bull; Problem Statement SIH26262 &bull; Ministry of Education / AICTE
     </div>
 
-    <h1 class="hero-title">
+    <div class="hero-logo-showcase reveal-item">
+      <img src="logo.png" alt="Soul Netra" class="hero-logo-img">
+    </div>
+
+    <h1 class="hero-title reveal-item">
       <span class="gradient-text">SOUL NETRA</span><br>
       Regulatory Workflow Orchestration & Continuing Compliance Engine
     </h1>
 
-    <p class="hero-sub">
+    <p class="hero-sub reveal-item">
       An explainable, rule-version-aware GovTech platform engineered to operate above transactional portals. Eliminates bureaucratic finger-pointing via <strong>Split-Clock Delay Attribution</strong>, prevents post-approval amnesia through a <strong>Continuing Obligations Register</strong>, and ensures mathematical non-repudiation with an append-only <strong>SHA-256 rolling audit ledger</strong>.
     </p>
 
-    <div class="hero-ctas">
-      <a href="#simulator" class="btn btn-primary">
+    <div class="hero-ctas reveal-item">
+      <a href="#simulator" class="btn btn-primary btn-glow btn-lg">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
         <span>Launch Interactive Simulator</span>
       </a>
-      <a href="#split-clock" class="btn btn-outline">
+      <a href="#split-clock" class="btn btn-outline btn-lg">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
         <span>Test Split-Clock SLA</span>
       </a>
-      <a href="#ledger" class="btn btn-outline">
+      <a href="#ledger" class="btn btn-outline btn-lg">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
         <span>Test Cryptographic Ledger</span>
       </a>
     </div>
 
     <div class="hero-stats">
-      <div class="stat-card">
-        <div class="stat-val">10,500+</div>
+      <div class="stat-card reveal-item">
+        <div class="stat-val counter" data-target="10500">0</div>
         <div class="stat-lbl">Institutions Governed</div>
       </div>
-      <div class="stat-card">
-        <div class="stat-val">18,000+</div>
+      <div class="stat-card reveal-item">
+        <div class="stat-val counter" data-target="18000">0</div>
         <div class="stat-lbl">Annual Regulatory Filings</div>
       </div>
-      <div class="stat-card">
+      <div class="stat-card reveal-item">
         <div class="stat-val">4 Routes</div>
         <div class="stat-lbl">Polymorphic Topologies</div>
       </div>
-      <div class="stat-card">
+      <div class="stat-card reveal-item">
         <div class="stat-val">0 ms</div>
         <div class="stat-lbl">Unattributed Review Latency</div>
       </div>
-      <div class="stat-card">
+      <div class="stat-card reveal-item">
         <div class="stat-val">O(N)</div>
         <div class="stat-lbl">Linear Tamper Detection</div>
       </div>
@@ -107,16 +124,16 @@
   </header>
 
   <!-- Module 1: Live Interactive Workflow & Route Simulator -->
-  <section class="section" id="simulator">
+  <section class="section reveal-section" id="simulator">
     <div class="section-header">
-      <span class="section-tag">Interactive Module 01</span>
-      <h2 class="section-title">Polymorphic Route State Machine Simulator</h2>
-      <p class="section-desc">
+      <span class="section-tag reveal-item">Interactive Module 01</span>
+      <h2 class="section-title reveal-item">Polymorphic Route State Machine Simulator</h2>
+      <p class="section-desc reveal-item">
         AICTE regulatory applications traverse 4 distinct statutory routes depending on institution category. Select a route topology below and test state transitions or trigger adversarial illegal bypass attempts.
       </p>
     </div>
 
-    <div class="card">
+    <div class="card reveal-item">
       <div class="card-header">
         <div class="card-title">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
@@ -133,7 +150,7 @@
 
       <!-- Simulation Action Controls -->
       <div class="pipeline-actions">
-        <button class="btn btn-primary" id="btn-stage-advance">
+        <button class="btn btn-primary btn-glow" id="btn-stage-advance">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
           <span>Advance to Next Permitted Stage</span>
         </button>
@@ -141,7 +158,7 @@
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
           <span>Simulate Deficiency Notice</span>
         </button>
-        <button class="btn btn-outline" id="btn-stage-bypass" style="color: #ef4444; border-color: rgba(239, 68, 68, 0.4);">
+        <button class="btn btn-outline btn-danger" id="btn-stage-bypass">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
           <span>Attempt Illegal Bypass (Adversarial Test)</span>
         </button>
@@ -150,21 +167,21 @@
   </section>
 
   <!-- Module 2: Live Dual-Accumulator Split-Clock SLA Meter -->
-  <section class="section" id="split-clock">
+  <section class="section reveal-section" id="split-clock">
     <div class="section-header">
-      <span class="section-tag">Interactive Module 02</span>
-      <h2 class="section-title">Split-Clock Delay Attribution Engine</h2>
-      <p class="section-desc">
-        Unlike standard monolithic issue trackers that use a single clock, SOUL NETRA partitions elapsed duration into three mutually exclusive accumulators: $T_{\text{inst}}$, $T_{\text{admin}}$, and $T_{\text{paused}}$.
+      <span class="section-tag reveal-item">Interactive Module 02</span>
+      <h2 class="section-title reveal-item">Split-Clock Delay Attribution Engine</h2>
+      <p class="section-desc reveal-item">
+        Unlike standard monolithic issue trackers that use a single clock, SOUL NETRA partitions elapsed duration into three mutually exclusive accumulators: T<sub>inst</sub>, T<sub>admin</sub>, and T<sub>paused</sub>.
       </p>
     </div>
 
-    <div class="split-clock-dashboard">
+    <div class="split-clock-dashboard reveal-item">
       <div class="clock-meters">
         <!-- Institution Clock -->
         <div class="meter-box" id="box-inst">
           <div class="meter-header">
-            <span class="meter-owner" style="color: #f59e0b;">Institution Clock ($T_{\text{inst}}$)</span>
+            <span class="meter-owner" style="color: #f59e0b;">Institution Clock (T<sub>inst</sub>)</span>
             <div class="pulse-dot"></div>
           </div>
           <div class="meter-time" id="meter-inst-val">0h 00m 00.0s</div>
@@ -174,7 +191,7 @@
         <!-- Administrative Review Clock -->
         <div class="meter-box active-owner" id="box-admin">
           <div class="meter-header">
-            <span class="meter-owner" style="color: #38bdf8;">Council Review Clock ($T_{\text{admin}}$)</span>
+            <span class="meter-owner" style="color: #38bdf8;">Council Review Clock (T<sub>admin</sub>)</span>
             <div class="pulse-dot"></div>
           </div>
           <div class="meter-time" id="meter-admin-val">0h 00m 00.0s</div>
@@ -184,7 +201,7 @@
         <!-- Judicial Stay Clock -->
         <div class="meter-box" id="box-paused">
           <div class="meter-header">
-            <span class="meter-owner" style="color: #a855f7;">Statutory Pause Clock ($T_{\text{paused}}$)</span>
+            <span class="meter-owner" style="color: #a855f7;">Statutory Pause Clock (T<sub>paused</sub>)</span>
             <div class="pulse-dot"></div>
           </div>
           <div class="meter-time" id="meter-paused-val">0h 00m 00.0s</div>
@@ -227,72 +244,72 @@
   </section>
 
   <!-- Module 3: Working-Day Statutory Deadline & Holiday Inspector -->
-  <section class="section" id="deadline">
+  <section class="section reveal-section" id="deadline">
     <div class="section-header">
-      <span class="section-tag">Interactive Module 03</span>
-      <h2 class="section-title">Working-Day Statutory Deadline Calculator</h2>
-      <p class="section-desc">
+      <span class="section-tag reveal-item">Interactive Module 03</span>
+      <h2 class="section-title reveal-item">Working-Day Statutory Deadline Calculator</h2>
+      <p class="section-desc reveal-item">
         Under statutory administrative law, deadlines cannot include non-working Sundays or state-specific gazetted public holidays. Enter prescribed SLA working days to inspect derivation trails.
       </p>
     </div>
 
     <div class="grid-2">
-      <div class="card">
+      <div class="card reveal-item">
         <div class="card-header">
           <div class="card-title">Deadline Calculation Parameters</div>
         </div>
-        <div style="display: flex; flex-direction: column; gap: 1rem;">
-          <div>
-            <label style="font-size: 0.85rem; color: var(--text-secondary); display: block; margin-bottom: 0.35rem;">Prescribed Statutory Working Days:</label>
-            <input type="number" id="calc-days" value="15" min="1" max="90" style="width: 100%; padding: 0.6rem 0.8rem; border-radius: 6px; border: 1px solid var(--border-subtle); background: var(--bg-card); color: var(--text-primary); font-family: var(--font-mono);">
+        <div class="form-group">
+          <div class="input-group">
+            <label class="input-label">Prescribed Statutory Working Days:</label>
+            <input type="number" id="calc-days" value="15" min="1" max="90" class="input-field">
           </div>
-          <div>
-            <label style="font-size: 0.85rem; color: var(--text-secondary); display: block; margin-bottom: 0.35rem;">State Jurisdiction (Gazetted Calendar):</label>
-            <select id="calc-jurisdiction" style="width: 100%; padding: 0.6rem 0.8rem; border-radius: 6px; border: 1px solid var(--border-subtle); background: var(--bg-card); color: var(--text-primary);">
+          <div class="input-group">
+            <label class="input-label">State Jurisdiction (Gazetted Calendar):</label>
+            <select id="calc-jurisdiction" class="input-field">
               <option value="MH">Maharashtra (Western Regional Office - WRO)</option>
               <option value="DL">Delhi (Headquarters & Northern Regional Bureau)</option>
               <option value="TN">Tamil Nadu (Southern Regional Office - SRO)</option>
               <option value="KA">Karnataka (South Western Regional Office - SWRO)</option>
             </select>
           </div>
-          <button class="btn btn-primary" id="btn-calc-deadline" style="margin-top: 0.5rem;">
+          <button class="btn btn-primary btn-glow" id="btn-calc-deadline" style="margin-top: 0.5rem;">
             <span>Compute Statutory Due Date</span>
           </button>
         </div>
       </div>
 
-      <div class="card">
+      <div class="card reveal-item">
         <div class="card-header">
           <div class="card-title">Derivation & Audit Provenance</div>
         </div>
-        <div id="calc-result" style="font-family: var(--font-mono); font-size: 1rem; color: var(--brand-cyan); margin-bottom: 1rem; font-weight: 700;">
+        <div id="calc-result" class="result-display">
           Statutory Cut-Off: [Click compute to evaluate]
         </div>
-        <div id="calc-trail" style="max-height: 200px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; padding-right: 4px;">
-          <div style="font-size: 0.8rem; color: var(--text-muted);">Audit log of deducted Sundays and gazetted holidays will appear here...</div>
+        <div id="calc-trail" class="trail-container">
+          <div class="trail-placeholder">Audit log of deducted Sundays and gazetted holidays will appear here...</div>
         </div>
       </div>
     </div>
   </section>
 
   <!-- Module 4: Cryptographic SHA-256 Rolling Hash Chain Ledger -->
-  <section class="section" id="ledger">
+  <section class="section reveal-section" id="ledger">
     <div class="section-header">
-      <span class="section-tag">Interactive Module 04</span>
-      <h2 class="section-title">Cryptographic SHA-256 Rolling Ledger</h2>
-      <p class="section-desc">
-        Audit events are chained using the Merkle-Damg&aring;rd linked-token formulation: $H_i = \text{SHA-256}(H_{i-1} \mathbin{\Vert} \text{payload})$. Test the ledger's linear $O(N)$ tamper detection by injecting an unauthorized mutation below.
+      <span class="section-tag reveal-item">Interactive Module 04</span>
+      <h2 class="section-title reveal-item">Cryptographic SHA-256 Rolling Ledger</h2>
+      <p class="section-desc reveal-item">
+        Audit events are chained using the Merkle-Damg&aring;rd linked-token formulation: H<sub>i</sub> = SHA-256(H<sub>i-1</sub> || payload). Test the ledger's linear O(N) tamper detection by injecting an unauthorized mutation below.
       </p>
     </div>
 
-    <div class="card">
+    <div class="card reveal-item">
       <div class="card-header">
         <div class="card-title">Append-Only Immutable Event Stream</div>
-        <div style="display: flex; gap: 0.5rem;">
-          <button class="btn btn-outline" id="btn-tamper-test" style="color: #ef4444; border-color: rgba(239, 68, 68, 0.4);">
+        <div class="card-actions">
+          <button class="btn btn-outline btn-danger" id="btn-tamper-test">
             <span>Inject Tamper Mutation (Attack Test)</span>
           </button>
-          <button class="btn btn-primary" id="btn-verify-chain">
+          <button class="btn btn-primary btn-glow" id="btn-verify-chain">
             <span>Verify Cryptographic Integrity</span>
           </button>
           <button class="btn btn-outline" id="btn-restore-chain">
@@ -307,34 +324,43 @@
   </section>
 
   <!-- Module 5: MeitY MeghRaj / NIC Cloud Cost Feasibility Explorer -->
-  <section class="section" id="costing">
+  <section class="section reveal-section" id="costing">
     <div class="section-header">
-      <span class="section-tag">Interactive Module 05</span>
-      <h2 class="section-title">MeitY MeghRaj / NIC GI Cloud Feasibility Model</h2>
-      <p class="section-desc">
+      <span class="section-tag reveal-item">Interactive Module 05</span>
+      <h2 class="section-title reveal-item">MeitY MeghRaj / NIC GI Cloud Feasibility Model</h2>
+      <p class="section-desc reveal-item">
         Cost models are grounded in official National Informatics Centre (NIC) National Data Centre rate cards. Switch between deployment scenarios below to evaluate realistic infrastructure budgets.
       </p>
     </div>
 
     <div class="grid-2">
-      <div class="card">
+      <div class="card reveal-item">
         <div class="card-header">
           <div class="card-title">Select Sizing Scenario</div>
         </div>
-        <select id="cost-scenario-select" style="width: 100%; padding: 0.75rem 1rem; border-radius: 8px; border: 1px solid var(--border-subtle); background: var(--bg-card); color: var(--text-primary); font-size: 0.95rem; font-weight: 600;">
+        <select id="cost-scenario-select" class="input-field" style="margin-bottom: 1.5rem;">
           <option value="proto">Scenario 1: Student Prototype (Free Tier / Docker)</option>
           <option value="regional" selected>Scenario 2: Regional Pilot (50 Colleges, 300 Filings)</option>
           <option value="scale">Scenario 3: Scale Pilot (2,500 Colleges, 10,000 Filings)</option>
         </select>
 
-        <div style="margin-top: 1.5rem; display: flex; flex-direction: column; gap: 0.85rem;">
-          <div><small style="color: var(--text-muted);">ESTIMATED MONTHLY COST:</small> <div id="cost-monthly-val" style="font-size: 1.8rem; font-weight: 800; font-family: var(--font-mono); color: var(--brand-cyan);">₹28,500 / month</div></div>
-          <div><small style="color: var(--text-muted);">ANNUAL OPERATING TCO:</small> <div id="cost-annual-val" style="font-size: 1.3rem; font-weight: 700; font-family: var(--font-mono); color: var(--accent-gold);">~₹3,42,000 / year</div></div>
-          <div><small style="color: var(--text-muted);">INFRASTRUCTURE ALLOCATION:</small> <div id="cost-sizing-val" style="font-size: 0.88rem; color: var(--text-secondary); margin-top: 0.2rem;">50 Colleges / 300 Filings, 2x VMs, Managed Postgres, 250 GB Vault</div></div>
+        <div class="cost-metrics">
+          <div class="cost-metric">
+            <small class="cost-label">ESTIMATED MONTHLY COST:</small>
+            <div id="cost-monthly-val" class="cost-value primary">₹28,500 / month</div>
+          </div>
+          <div class="cost-metric">
+            <small class="cost-label">ANNUAL OPERATING TCO:</small>
+            <div id="cost-annual-val" class="cost-value gold">~₹3,42,000 / year</div>
+          </div>
+          <div class="cost-metric">
+            <small class="cost-label">INFRASTRUCTURE ALLOCATION:</small>
+            <div id="cost-sizing-val" class="cost-sizing">50 Colleges / 300 Filings, 2x VMs, Managed Postgres, 250 GB Vault</div>
+          </div>
         </div>
       </div>
 
-      <div class="card">
+      <div class="card reveal-item">
         <div class="card-header">
           <div class="card-title">NIC MeghRaj Indicative Tariff Card</div>
         </div>
@@ -375,76 +401,110 @@
   </section>
 
   <!-- Module 6: Core Relational Schemas & Source Code -->
-  <section class="section" id="code-assets">
+  <section class="section reveal-section" id="code-assets">
     <div class="section-header">
-      <span class="section-tag">Interactive Module 06</span>
-      <h2 class="section-title">Relational Schemas & Core Source Modules</h2>
-      <p class="section-desc">
+      <span class="section-tag reveal-item">Interactive Module 06</span>
+      <h2 class="section-title reveal-item">Relational Schemas & Core Source Modules</h2>
+      <p class="section-desc reveal-item">
         Inspect the production-ready source code powering the SOUL NETRA orchestrator. All files are deposited in accordance with Rule 70(5) of the Copyright Rules, 2013.
       </p>
     </div>
 
     <div class="grid-3">
-      <div class="card">
+      <div class="card code-card reveal-item">
         <div class="card-header">
           <div class="card-title">schema.sql</div>
           <span class="sih-badge">SQL</span>
         </div>
-        <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">
+        <p class="card-desc">
           PostgreSQL 16 11-table 3NF relational schema, UUID primary keys, and immutable append-only triggers.
         </p>
-        <a href="code_assets/schema.sql" class="btn btn-outline" style="width: 100%; justify-content: center;" download>
+        <a href="code_assets/schema.sql" class="btn btn-outline btn-full" download>
           <span>Download schema.sql</span>
         </a>
       </div>
 
-      <div class="card">
+      <div class="card code-card reveal-item">
         <div class="card-header">
           <div class="card-title">workflow_engine.py</div>
           <span class="sih-badge">Python 3.11</span>
         </div>
-        <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">
+        <p class="card-desc">
           Polymorphic state machine engine, 4 route topologies, and millisecond split-clock delay accumulator.
         </p>
-        <a href="code_assets/workflow_engine.py" class="btn btn-outline" style="width: 100%; justify-content: center;" download>
+        <a href="code_assets/workflow_engine.py" class="btn btn-outline btn-full" download>
           <span>Download workflow_engine.py</span>
         </a>
       </div>
 
-      <div class="card">
+      <div class="card code-card reveal-item">
         <div class="card-header">
           <div class="card-title">audit_ledger.py</div>
           <span class="sih-badge">Python 3.11</span>
         </div>
-        <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">
-          Append-only SHA-256 rolling hash chain generator and $O(N)$ linear tamper verification algorithm.
+        <p class="card-desc">
+          Append-only SHA-256 rolling hash chain generator and O(N) linear tamper verification algorithm.
         </p>
-        <a href="code_assets/audit_ledger.py" class="btn btn-outline" style="width: 100%; justify-content: center;" download>
+        <a href="code_assets/audit_ledger.py" class="btn btn-outline btn-full" download>
           <span>Download audit_ledger.py</span>
         </a>
       </div>
     </div>
   </section>
 
-  <!-- Module 7: Official Copyright Registration Dossier Download -->
-  <section class="section" id="dossier">
-    <div class="card" style="border-color: var(--brand-cyan); background: linear-gradient(135deg, rgba(56, 189, 248, 0.08), rgba(37, 99, 235, 0.08)); text-align: center; padding: 3rem 2rem;">
-      <span class="sih-badge" style="font-size: 0.85rem; padding: 4px 12px; margin-bottom: 1rem; display: inline-block;">GOVERNMENT OF INDIA &bull; COPYRIGHT OFFICE (DPIIT)</span>
-      <h2 style="font-size: 2.2rem; font-weight: 800; margin-bottom: 0.75rem;">Official Software Copyright Technical Dossier</h2>
-      <p style="max-width: 780px; margin: 0 auto 2rem auto; color: var(--text-secondary);">
+  <!-- Module 7: Official Copyright Registration Dossier (VIEW ONLY) -->
+  <section class="section reveal-section" id="dossier">
+    <div class="card dossier-card reveal-item">
+      <div class="dossier-icon">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      </div>
+      <span class="sih-badge dossier-badge">GOVERNMENT OF INDIA &bull; COPYRIGHT OFFICE (DPIIT)</span>
+      <h2 class="dossier-title">Official Software Copyright Technical Dossier</h2>
+      <p class="dossier-desc">
         Complete 35-page formal submission document containing Certificate of Institutional Endorsement, Form XIV Statement of Particulars, Declaration of Authorship, Synchronized Table of Contents, 10 Research Chapters, and Rule 70(5) Source Code Deposit.
       </p>
-      <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-        <a href="docs/SOUL_NETRA_Copyright_Technical_Report.pdf" class="btn btn-primary" style="padding: 0.75rem 1.75rem; font-size: 1rem;" download>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          <span>Download Complete Dossier (PDF)</span>
-        </a>
+      <div class="dossier-actions">
+        <button class="btn btn-primary btn-glow btn-lg" id="btn-open-report">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          <span>View Secure Dossier (Read Only)</span>
+        </button>
       </div>
+      <p class="dossier-notice">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        Protected by digital watermark. Downloading and text copying are disabled for intellectual property protection.
+      </p>
     </div>
   </section>
 
+  <!-- Secure Report Viewer Modal Overlay -->
+  <div class="report-viewer-overlay" id="report-viewer-overlay">
+    <div class="report-viewer-container">
+      <div class="report-viewer-header">
+        <div class="report-viewer-title">
+          <img src="logo.png" alt="Soul Netra" class="report-logo">
+          <div>
+            <strong>SOUL NETRA — Copyright Technical Dossier</strong>
+            <span class="report-viewer-sub">VIEW ONLY • Watermark Protected • Copy Disabled</span>
+          </div>
+        </div>
+        <button class="report-close-btn" id="report-close-btn" title="Close Viewer">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="report-viewer-body" id="report-viewer-body">
+        <!-- Watermark Overlay -->
+        <div class="watermark-overlay" id="watermark-overlay"></div>
+        <!-- PDF Iframe -->
+        <iframe id="report-iframe" class="report-iframe" src="" title="SOUL NETRA Copyright Report"></iframe>
+      </div>
+    </div>
+  </div>
+
   <!-- Footer with Equal Authorship Credits -->
   <footer class="footer">
+    <div class="footer-brand">
+      <img src="logo.png" alt="Soul Netra" class="footer-logo">
+    </div>
     <div class="footer-grid">
       <div class="footer-col" style="grid-column: span 2;">
         <h4>SOUL NETRA (SIH26262)</h4>
